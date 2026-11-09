@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 1 实战：Trace → 标注 → 错误分组 · AI Evals 课程精华</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="progress" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:99;transition:width .1s"></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">EV</span><b>AI Evals 实战精华</b></a>
+  <span class="spacer"></span>
+  <button class="iconbtn" id="searchBtn" title="搜索 (Ctrl+K)">⌕</button>
+  <button class="iconbtn" id="themeBtn" title="切换明暗主题">◐</button>
+  <button class="iconbtn" id="navBtn" title="目录" style="display:none">☰</button>
+</header>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <p class="kicker">课程地图</p>
+    <a href="index.html"><span class="no">00</span>总览 · 课程地图</a>
+    <a href="01-opening.html"><span class="no">01</span>开场：这门课为什么值得学</a>
+    <a href="02-why-tests-fail.html"><span class="no">02</span>为什么单元测试不够用</a>
+    <a href="03-week1-error-analysis.html" class="active"><span class="no">03</span>Week 1 实战：Trace → 标注 → 错误分组</a>
+    <a href="04-trace-multiturn.html"><span class="no">04</span>读 Trace 与多轮评估</a>
+    <a href="05-tooling.html"><span class="no">05</span>工具全景：平台选型与工作流</a>
+    <a href="06-llm-judge.html"><span class="no">06</span>通往 LLM Judge</a>
+    <a href="charts.html"><span class="no">07</span>图表库（重建）</a>
+    <a href="cheatsheet.html"><span class="no">08</span>速查手册</a>
+  </nav>
+  <main class="main">
+    <div class="content">
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 03 · 视频主线</p>
+  <h1 style="font-size:40px">Week 1 实战：Trace → 标注 → 错误分组</h1>
+  <p class="sub">这是整门课最重要的一周作业——不是因为技术难，而是因为它刻意<b>去掉了所有技术难度</b>。没有 LLM 调用、没有复杂框架，只有一个脚本化客服 Agent 和 40 条真实感的对话。你要练的肌肉是：<b>看见问题、说清理由、归类分组</b>。</p>
+</section>
+
+<section id="why-bounded">
+  <h2><span class="num">3.1</span>为什么 Week 1 故意"不调用 LLM"</h2>
+  <div class="bigquote">"Week 1 is bounded on purpose… the skill I want all of you to build before you go too far is: the ability to look at a trace, see what's wrong, annotate it, and group your observations."<cite>— 讲师，P2 13:05（意译）</cite></div>
+
+  <p>很多学员的第一反应是"这不真实"——对话都是 <code>agent.py</code> 里的正则与固定回复，问"我的订单呢"它就去翻 ticket，没接任何模型。讲师两次解释了设计意图：</p>
+  <div class="grid c2">
+    <div class="card">
+      <h4 style="margin-top:0">统一可跑性</h4>
+      <p style="margin:0" class="muted">"Some of you may not have your LLM API set up, that's why I'm waiting for Braintrust."（P2 06:00）所有人先在自己的机器上把流程跑通，不因环境差异卡死。</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">先建"人眼"再建"机器眼"</h4>
+      <p style="margin:0" class="muted">"The goal is not to be 100% correct at this point… the need to understand fundamentals will never go away, no matter how these logs are showing up."（P2 17:11 / 34:12）</p>
+    </div>
+  </div>
+
+  <p>配套的 harness 是公开 GitHub 仓库（讲师演示时直接 clone 到 Cursor 里）：<code>make setup</code> 装依赖 → <code>make agent</code> 启动客服 Agent → 输入问题得到回复与 trace。"Once you have the make agent completed, then that agent will be ready to take your inputs."（P2 24:08）——学员 Roger 在 Mac 上卡在 <code>make agent</code>，讲师的诊断是依赖/版本问题，建议把完整报错贴给 AI 助手："they are all pretty much the same, then they will tell you how to fix it."</p>
+</section>
+
+<section id="pipeline">
+  <h2><span class="num">3.2</span>作业七步动线</h2>
+  <div class="tl">
+    <div class="tl-item"><span class="t">Step 1</span><h4>跑通 Agent</h4><p><code>make setup</code> → <code>make agent</code>；确认单轮问答能出结果。失败多为 pip 依赖 / Python 版本（P2 20:49）。</p></div>
+    <div class="tl-item"><span class="t">Step 2</span><h4>生成 traces</h4><p>用仓库自带的 demo 数据跑一批对话；多轮对话可以一次传入多个 turn（P2 24:26 "you can literally pass multiple turns in here"）。</p></div>
+    <div class="tl-item"><span class="t">Step 3</span><h4>接入可观测平台</h4><p>拿到 Braintrust（或 LangSmith）的 <code>SK_</code> 开头 API key → 写进 <code>.env</code> → traces 自动流入平台。一次埋点，终身受益（P2 29:16 / 25:40）。</p></div>
+    <div class="tl-item"><span class="t">Step 4</span><h4>逐条读、逐条标</h4><p>打开 Chat Transcript 看对话，进 span 看工具调用；对每条给 <b>pass / fail</b>，并写下<b>理由</b>（failure 的原因类别）。</p></div>
+    <div class="tl-item"><span class="t">Step 5</span><h4>把标注写回 CSV</h4><p>作业的交付物是标注好的 CSV。多轮会话<b>每轮一行</b>，不要把多轮用逗号塞进一个单元格（P2 59:50 学员踩坑复现）。</p></div>
+    <div class="tl-item"><span class="t">Step 6</span><h4>分组统计</h4><p>"Out of 40 examples, how many had issues related to refund, how many related to…"（P2 13:38）按失败类型聚簇，得到一张"问题分布表"。</p></div>
+    <div class="tl-item"><span class="t">Step 7</span><h4>看 9 分钟 solution 视频</h4><p>课后发布的 walkthrough：setup → error analysis → 明确列出已知局限（如 stateless harness 丢上下文）。"My goal is not to share this beforehand… try it out first."（P2 69:42）</p></div>
+  </div>
+</section>
+
+<section id="judgment">
+  <h2><span class="num">3.3</span>没人告诉你的 Pass/Fail 判定哲学</h2>
+  <p>学员 Uma 的困惑非常典型：一条对话里 Agent 反问"请提供订单号"，而用户已经说了"同一订单被扣两次 $62.10"。这算 pass 还是 fail？讲师现场打开 demo 数据跑了一遍，然后给出判例：</p>
+
+  <div class="bigquote">"From the workflow standpoint… first you want to authenticate the user and make sure this is the right person. If it's asking for order ID, then this is the correct behavior. So you'll call it a pass."<cite>— 讲师，P2 16:18（意译）</cite></div>
+
+  <div class="grid c2" style="margin-top:22px">
+    <div class="callout teal" style="margin:0"><b>判定三原则</b><br>① 站在<b>业务工作流</b>上看行为是否合规（先认证、再动数据）；<br>② 不同标注者可以判得不一样——<b>先写清理由，再求一致</b>；<br>③ 这阶段的一致性目标是"可讨论"，不是"绝对正确"。</div>
+    <div class="callout violet" style="margin:0"><b>失败归因要分两层</b><br>学员 Naveen 发现"上下文丢失、没有 agent ID"——讲师确认这是 <b>harness bug</b>（脚本化 harness 无状态），不是产品 bug：<br>"That will be harness bug, because it's just the way this harness has the limitation… that's the right term to use."（P2 63:42）</div>
+  </div>
+
+  <h3>标注时顺带记录的信息</h3>
+  <table>
+    <tr><th>字段</th><th>为什么记</th></tr>
+    <tr><td>pass / fail</td><td>最终的二元判定，用于统计通过率与回归基线</td></tr>
+    <tr><td>失败类型（refund / warranty / context / tool…）</td><td>错误分组的分组键；决定"下一步修什么"的输入</td></tr>
+    <tr><td>失败发生在哪一层（LLM span / tool call / 会话）</td><td>把问题定位到代码或提示词，而不是"整体不好"</td></tr>
+    <tr><td>harness bug 标记</td><td>环境问题不计入产品指标，避免误导后续优化</td></tr>
+  </table>
+</section>
+
+<section id="deliverables">
+  <h2><span class="num">3.4</span>常见坑（全部来自本场答疑的真实提问）</h2>
+  <details>
+    <summary>坑 1 · 多轮 CSV 格式：输出只剩最后一轮</summary>
+    <div class="body">学员 Hian 的标注 CSV 中，输入用斜杠分隔多轮，但输出只保留了最后一轮，需要回到 trace 里重新拼。讲师回复：多轮应作为<b>独立的轮次行</b>提交，而不是逗号拼接在单格里；格式不对会导致 join 失败。他当场把正确示例补进了 repo README。（P2 59:50 – 61:46）</div>
+  </details>
+  <details>
+    <summary>坑 2 · "这不算真实数据，我能改吗？"</summary>
+    <div class="body">"Don't fix it on the full correctness or not."（P2 16:55）——本作业要的是标注肌肉，不是修 Agent。想玩真的：用 Cloud Code / 自己的框架建一个真 Agent，把 trace 接到同一个平台即可，课程不复刻那个 harness。</div>
+  </details>
+  <details>
+    <summary>坑 3 · Braintrust 要下载整个项目吗？</summary>
+    <div class="body">"No, you don't need it on the Braintrust. That's your running — in my case locally."（P2 29:56）平台只接收 traces，不托管代码。</div>
+  </details>
+  <details>
+    <summary>坑 4 · 拿不到 API 额度 / 不想花钱</summary>
+    <div class="body">讲师的顺序建议：先用平台 credits（他争取到了 $10–20）；预算敏感可用本地小模型（Ollama），但注意"20 条用例要 10–20 分钟"，只适合小批验证。（P2 02:01 / 28:45）</div>
+  </details>
+  <details>
+    <summary>坑 5 · 想跳过标注直接调 LLM Judge</summary>
+    <div class="body">不行——Week 2 的 Judge 对齐需要 Week 1 的人工标注当"人类共识"的基线。"That's why the exercise we did in week one: you take the traces and then we annotate them."（P2 10:26）没有标注，Judge 没有校准锚点。</div>
+  </details>
+</section><nav class="pager"><a href="02-why-tests-fail.html"><div class="lbl">← 上一章</div><div class="ttl">为什么单元测试不够用</div></a><a class="next" href="04-trace-multiturn.html"><div class="lbl">下一章 →</div><div class="ttl">读 Trace 与多轮评估</div></a></nav>
+    </div>
+    <footer>依据 Bilibili《AI 评估体系实战：面向工程师与产品经理》两分P 全程整理 · 图表与引述均标注视频时间戳 · <a href="index.html" style="color:inherit">返回总览</a></footer>
+  </main>
+</div>
+<div class="searchbox" id="searchbox">
+  <div class="searchpanel">
+    <input type="text" placeholder="搜索全文：概念 / 指标 / 工具 / 时间戳…（Ctrl+K）">
+    <div class="results"></div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox"><img alt="放大查看"></div>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

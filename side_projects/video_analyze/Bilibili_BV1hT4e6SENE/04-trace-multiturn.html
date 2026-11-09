@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>读 Trace 与多轮评估 · AI Evals 课程精华</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="progress" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:99;transition:width .1s"></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">EV</span><b>AI Evals 实战精华</b></a>
+  <span class="spacer"></span>
+  <button class="iconbtn" id="searchBtn" title="搜索 (Ctrl+K)">⌕</button>
+  <button class="iconbtn" id="themeBtn" title="切换明暗主题">◐</button>
+  <button class="iconbtn" id="navBtn" title="目录" style="display:none">☰</button>
+</header>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <p class="kicker">课程地图</p>
+    <a href="index.html"><span class="no">00</span>总览 · 课程地图</a>
+    <a href="01-opening.html"><span class="no">01</span>开场：这门课为什么值得学</a>
+    <a href="02-why-tests-fail.html"><span class="no">02</span>为什么单元测试不够用</a>
+    <a href="03-week1-error-analysis.html"><span class="no">03</span>Week 1 实战：Trace → 标注 → 错误分组</a>
+    <a href="04-trace-multiturn.html" class="active"><span class="no">04</span>读 Trace 与多轮评估</a>
+    <a href="05-tooling.html"><span class="no">05</span>工具全景：平台选型与工作流</a>
+    <a href="06-llm-judge.html"><span class="no">06</span>通往 LLM Judge</a>
+    <a href="charts.html"><span class="no">07</span>图表库（重建）</a>
+    <a href="cheatsheet.html"><span class="no">08</span>速查手册</a>
+  </nav>
+  <main class="main">
+    <div class="content">
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 04 · P2 36:00–46:00 精讲</p>
+  <h1 style="font-size:40px">读 Trace 与多轮评估</h1>
+  <p class="sub">"这个日志看起来好乱"——所有人的第一反应。讲师用了整整十分钟带学员逐层拆一条 trace，给出了一套可复用的阅读顺序。这一章把它整理成清单。</p>
+</section>
+
+<section id="20-80">
+  <h2><span class="num">4.1</span>20/80 阅读法：先人话，后细节</h2>
+  <div class="bigquote">"The most important thing is: start with the chat transcripts… because that's the 20/80 analysis."<cite>— 讲师，P2 36:17</cite></div>
+  <p>顺序永远是：<b>① Chat Transcript</b>（这轮对话到底聊了什么、用户要什么）→ <b>② Root Span</b>（整个 turn 的顶层执行）→ <b>③ LLM Span</b>（模型看到了什么、输出了什么、花了多少）→ <b>④ Tool Calls</b>（走了哪条路径、参数对不对）→ <b>⑤ Raw YAML/JSON</b>（需要全量细节时）。</p>
+  <div class="callout"><b>为什么要 20/80：</b>80% 的失败在 chat transcript 就能看出来（答非所问、上下文丢失、幻觉）；只有剩下的 20% 需要下沉到 span 级去找根因（"it took the right path or wrong path"）。先看细节会被噪声淹没、"这日志看起来好乱"就是这么来的。</div>
+</section>
+
+<section id="metrics">
+  <h2><span class="num">4.2</span>Span 里必须看的六个数</h2>
+  <div class="grid c3">
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">Tokens</h4><p class="muted" style="margin:0;font-size:14px">例中单次调用 23 tokens——异常少说明系统提示词没进来，异常多要查上下文堆叠。</p></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">Latency</h4><p class="muted" style="margin:0;font-size:14px">总耗时（例：0.9s）。Agent 场景要按 span 逐层加总看时间去哪了。</p></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">首 Token 时间</h4><p class="muted" style="margin:0;font-size:14px">"Time to first token"——用户体感的起点；Agent 变慢时优先查这里（P2 38:04）。</p></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">Cost</h4><p class="muted" style="margin:0;font-size:14px">平台按 span 计费统计；也是"把 eval 跑在夜间"的动机之一。</p></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">Tool 调用链</h4><p class="muted" style="margin:0;font-size:14px">层级结构（hierarchical threading）：哪个工具、什么参数、返回什么——失败的黄金证据。</p></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--accent)">Input / Output 全文</h4><p class="muted" style="margin:0;font-size:14px">"what was the input, what was the output"——所有高层视图都只从这份数据派生。</p></div>
+  </div>
+</section>
+
+<section id="multiturn">
+  <h2><span class="num">4.3</span>多轮对话怎么评：逐轮 + 整体</h2>
+  <p>讲师的原话："You need to do both — each turn level, and the final pass/fail。因为会话级的 pass/fail 是：<b>用户的问题解决了吗</b>。"（P2 17:52，意译）</p>
+  <p>多轮里 context 是一条不断累积的链："the context keeps on building from the first question to the second"（P2 45:05）。所以逐轮定位"从哪开始跑偏"，会话级判定"最终意图是否达成"。学员 Hian 的 CSV 问题恰好暴露了多轮数据的工程约束——每轮必须独立成行，带上会话 ID 以便回拼。</p>
+  <div class="callout teal"><b>与 LLM Judge 的衔接：</b>Week 2 的 Judge 可以先做 turn-level rubric（每轮按 pass/fail 标准打分），再做 conversation-level rubric（整体是否解决）；两级 rubric 的判据要分开写，混在一起会让评委"平均主义"，把关键轮次的失败抹平。</div>
+</section>
+
+<section id="platform-view">
+  <h2><span class="num">4.4</span>换平台会不会白学？不会</h2>
+  <p>讲师现场把同一套概念在 Braintrust 与 Agentforce 里各讲了一遍：同一会话的 input、topic、action、attributes——</p>
+  <div class="bigquote">"Some of these attributes and naming can be vendor specific… the fundamentals are the same."<cite>— 讲师，P2 44:21</cite></div>
+  <p>Agentforce 的 Preview 里，"小聊（small talk）"与"退款请求"走的是不同动作与工具，trace 把每一步都记下；他甚至指出厂商会给概念起不同名字，但映射关系是稳定的（见 <a href="05-tooling.html#mapping">术语映射表</a>）。</p>
+  <figure style="margin-top:26px">
+    <img src="assets/img/p2_trace_ui.jpg" alt="Braintrust 平台里的多轮会话 trace 视图（原片 P2 24:46）">
+    <figcaption><span class="tag-time">P2 · 24:46 – 25:30</span> 原片实录：讲师在 Braintrust 里逐轮点开 5 个 turn 的会话面板。<span class="muted">（截图仅作证据保留，结构解读以上方清单为准）</span></figcaption>
+  </figure>
+</section><nav class="pager"><a href="03-week1-error-analysis.html"><div class="lbl">← 上一章</div><div class="ttl">Week 1 实战：Trace → 标注 → 错误分组</div></a><a class="next" href="05-tooling.html"><div class="lbl">下一章 →</div><div class="ttl">工具全景：平台选型与工作流</div></a></nav>
+    </div>
+    <footer>依据 Bilibili《AI 评估体系实战：面向工程师与产品经理》两分P 全程整理 · 图表与引述均标注视频时间戳 · <a href="index.html" style="color:inherit">返回总览</a></footer>
+  </main>
+</div>
+<div class="searchbox" id="searchbox">
+  <div class="searchpanel">
+    <input type="text" placeholder="搜索全文：概念 / 指标 / 工具 / 时间戳…（Ctrl+K）">
+    <div class="results"></div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox"><img alt="放大查看"></div>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

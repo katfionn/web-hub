@@ -1,0 +1,137 @@
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 02 · 核心理论（P1 讲授段 + 课程文档）</p>
+  <h1 style="font-size:40px">为什么单元测试不够用</h1>
+  <p class="sub">"非确定性系统怎么测？"——这是整门课要拆掉的第一堵墙。讲师从软件工程史讲起（单元测试 → 回归测试 → A/B 发布），逐个说明为什么这套方法论在 LLM 应用上逐层失效，最后交付一个替代结构：<b>数据集 + 评委 + 实验</b>。</p>
+</section>
+
+<section id="paradox">
+  <h2><span class="num">2.1</span>悖论：熟办法撞上陌生系统</h2>
+  <div class="bigquote">"We have this notion of how software is built and tested — unit testing, regression testing… But now: how do we test non-deterministic systems? What can we do when these things drift at different layers of the stack? It's a very conflicting image."<cite>— 讲师，P1 03:07 – 03:45（意译）</cite></div>
+  <p>课程文档把冲突写得更直接（Unit 1 · 文档原文）：</p>
+  <div class="card" style="font-family:var(--serif);font-size:16px;line-height:1.8">
+    "Classic code is <b>deterministic</b> — execute the same code and you get the same output. So tests are typically just assertions… LLM-powered applications are <b>inherently non-deterministic</b>… The same prompt can produce different outputs. Unlike traditional software, which is deterministic and easy to test with assertions, LLM behavior is intrinsically unpredictable. <b>You need more than pass/fail on a golden test case.</b>"
+    <p class="muted" style="font-family:var(--mono);font-size:12px;margin:12px 0 0">— 课堂文档 "Introduction" 节（P1 164:54 屏幕原文整理）</p>
+  </div>
+</section>
+
+<section id="unit-test-limits">
+  <h2><span class="num">2.2</span>单元测试的四条边界（文档原文）</h2>
+  <table>
+    <tr><th>局限</th><th>原文</th><th>在 Agent 场景里的具体表现</th></tr>
+    <tr><td>输入输出必须预先给定</td><td>"Accepts predefined inputs and outputs"</td><td>一条用户消息可以有很多合理回复，golden answer 写死哪个都是错的</td></tr>
+    <tr><td>断言是静态硬编码</td><td>"Hardcoded / static assertions"</td><td>"回复里必须含订单号"这类断言无法表达"先认证后答复"的流程合规</td></tr>
+    <tr><td>维护成本随规模爆炸</td><td>"Cheap to run, difficult to maintain at scale"</td><td>100 条断言好维护，1000 条场景 × 多轮对话就不可持续</td></tr>
+    <tr><td>捕捉不了定性质量</td><td>"Doesn't capture qualitative aspects"</td><td>语气、helpfulness、是否解决诉求——恰恰是用户体验的核心</td></tr>
+  </table>
+
+  <h3>替代品：eval 的正式定义</h3>
+  <div class="card" style="font-family:var(--serif);font-size:16px;line-height:1.85">
+    "The process of creating a train set for your model is similar to creating a test set for your model. <b>Evaluation, then, is the process of measuring an LLM-powered application on different performance characteristics (quality, safety, security, reliability, cost, latency, etc.) against that dataset.</b> We can't begin improving our apps unless we can quantify our current performance."
+    <p class="muted" style="font-family:var(--mono);font-size:12px;margin:12px 0 0">— 课堂文档 "Introduction" 节；评分维度清单意味着评估从不是"一个分"，而是一张多维度体检表</p>
+  </div>
+</section>
+
+<section id="ab-fails">
+  <h2><span class="num">2.3</span>再往上：A/B 测试也救不了</h2>
+  <p>就算你把单元测试换成了"线上 A/B"，问题依旧。入门视频里的论证链（重建见 <a href="charts.html#ch-ab">图表 03</a>）：</p>
+  <figure style="margin:26px 0">
+    <img src="assets/img/p1_whiteboard.jpg" alt="入门视频中的白板讲解画面（原片 P1 17:15 平台预览）">
+    <figcaption><span class="tag-time">P1 · 17:15</span> 原片白板："A/B testing is not going to work" —— LLM apps are SaaS（高频迭代）/ non-deterministic / high variance。</figcaption>
+  </figure>
+  <div class="grid c3">
+    <div class="card"><h4 style="margin-top:0;font-size:15px;color:var(--accent)">噪声大</h4><p class="muted" style="margin:0;font-size:13.5px">"Too noisy — requires massive sample sizes." 对话质量指标的方差让显著性检验需要海量流量。</p></div>
+    <div class="card"><h4 style="margin-top:0;font-size:15px;color:var(--accent)">归因粗</h4><p class="muted" style="margin:0;font-size:13.5px">p=0.04 只告诉你"v2 均值更好/更差"，不告诉你差在退款场景还是上下文丢失。</p></div>
+    <div class="card"><h4 style="margin-top:0;font-size:15px;color:var(--accent)">迭代慢</h4><p class="muted" style="margin:0;font-size:13.5px">每周都要发版的团队等不起 A/B 跑完显著性——评估必须能<b>离线、按场景、几分钟出结果</b>。</p></div>
+  </div>
+</section>
+
+<section id="stool-theory">
+  <h2><span class="num">2.4</span>替代结构：三腿凳（课堂一手证据）</h2>
+  <p>讲师在 P1 讲授段直接把凳子搬了出来："You remember the three legs picture? Recall your metrics — you have the <b>jobs to be done</b>（任务）, what are the metrics, how we will score them."（P1 150:16，完整重绘见 <a href="charts.html#ch-stool">图表 01</a>）三条腿缺一条，"your basic eval is incomplete"（P1 151:01）。</p>
+  <p>其中第二条腿——指标——在课上被拆成两个桶：</p>
+  <div class="grid c2">
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent-2)">AI 指标</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">质量分、准确率、faithfulness……描述"回答本身好不好"。学员在课上共同答出的双桶结构（P1 152:03）。</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent-3)">业务指标</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">解决率、升级率、留存、情绪分……描述"对业务有没有用"。讲师提醒：dashboard 全绿而用户在 Reddit 骂街，就是只有 AI 指标没有业务指标（P1 160:55）。</p>
+    </div>
+  </div>
+</section>
+
+<section id="threshold">
+  <h2><span class="num">2.5</span>阈值是场景的函数，不是拍脑袋的数字</h2>
+  <p>讲师的真实经历，两个极端：</p>
+  <div class="grid c2">
+    <div class="card" style="border-left:4px solid var(--accent-2)">
+      <h4 style="margin-top:0">内部员工 Agent：50% 就够了</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">"Internal only, I can do a more controlled launch… as long as it's passing 50% on quality and accuracy scores, I was okay to launch it internally."（P1 152:21）——低风险、可灰度、错了能立即回滚。</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--accent)">
+      <h4 style="margin-top:0">法务 / 财务 Agent：90%+ 加双保险</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">"Where the cost of being wrong is very high… 90% plus, and also with citations, and also with some deterministic checks on top."（P1 153:09）——高成本错误 + 确定性兜底 + 引用可查。</p>
+    </div>
+  </div>
+
+  <h3>决定"评估强度"的三维模型（P1 175:25 手绘三框讲解的重绘）</h3>
+  <figure style="margin:24px 0">
+    <svg viewBox="0 0 880 320" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <g>
+          <text x="40" y="34" font-size="12.5" font-weight="700" fill="var(--ink-2)">可逆性 × 影响面 → 评估强度</text>
+          <text x="112" y="54" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">↑ 影响面大</text>
+          <line x1="110" y1="66" x2="110" y2="260" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="110" y1="260" x2="380" y2="260" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <text x="245" y="284" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">可逆性：双向门 ← → 单向门</text>
+          <g text-anchor="middle" font-size="10.5">
+            <rect x="120" y="74" width="120" height="84" rx="6" fill="var(--card)" stroke="var(--line)"/>
+            <text x="180" y="108" fill="var(--ink-3)">draft 邮件</text>
+            <text x="180" y="128" font-size="10" font-family="var(--mono)" fill="var(--accent-2)">常规评估</text>
+            <rect x="250" y="74" width="120" height="84" rx="6" fill="color-mix(in srgb, var(--accent) 10%, var(--card))" stroke="var(--accent)"/>
+            <text x="310" y="108" fill="var(--ink-2)">send 邮件</text>
+            <text x="310" y="128" font-size="10" font-family="var(--mono)" fill="var(--accent)">红线 + 人工确认</text>
+            <rect x="120" y="166" width="120" height="84" rx="6" fill="var(--card)" stroke="var(--line)"/>
+            <text x="180" y="200" fill="var(--ink-3)">读报表 / 搜索</text>
+            <text x="180" y="220" font-size="10" font-family="var(--mono)" fill="var(--ink-3)">抽检即可</text>
+            <rect x="250" y="166" width="120" height="84" rx="6" fill="color-mix(in srgb, var(--accent-3) 10%, var(--card))" stroke="var(--accent-3)"/>
+            <text x="310" y="200" fill="var(--ink-2)">数据泄漏</text>
+            <text x="310" y="220" font-size="10" font-family="var(--mono)" fill="var(--accent-3)">红队 + 注入测试</text>
+          </g>
+        </g>
+        <g font-size="12" fill="var(--ink-2)" font-family="var(--sans)">
+          <text x="420" y="70" font-weight="700" fill="var(--ink)">三个维度（讲师原话整理）：</text>
+          <text x="420" y="96">① 可逆性：one-way door vs two-way door</text>
+          <text x="420" y="120">② blast radius：出事后影响多少人、多快</text>
+          <text x="420" y="144">③ 犯错成本（并入 ② 一起权衡）</text>
+          <text x="420" y="184" fill="var(--ink-3)">Anthropic 源码泄漏：漏洞 → GitHub →</text>
+          <text x="420" y="202" fill="var(--ink-3)">推特 → 200 万人下载。这就是"机器速度"的影响面。</text>
+          <text x="420" y="240" fill="var(--ink)">结论：越不可逆、影响面越大——</text>
+          <text x="420" y="258" fill="var(--ink)">eval gates 越严，红队与注入测试投入越多。</text>
+          <text x="420" y="288" font-family="var(--mono)" font-size="11" fill="var(--ink-3)">— P1 175:25 – 179:11</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P1 · 175:25 – 179:11</span> 讲师现场画"两三个框"解释 blast radius；四象限为本页重绘。</figcaption>
+  </figure>
+</section>
+
+<section id="eval-first">
+  <h2><span class="num">2.6</span>两条被反复强调的原则</h2>
+  <h3>原则一：Eval 先行——"在动手构建之前"</h3>
+  <div class="bigquote">"You should be doing it <b>before you even start building</b>, or even building your first prototype. Otherwise the number of iterations you would need will be very high."<cite>— 答学员 Naveen 问"eval 在开发流程中的位置"，P1 173:03（意译）</cite></div>
+  <p>他的落地演示：假设明天要上线一个"卖冰淇淋"的新 Agent——先写数据集/测试场景/failure modes → 拿着这份"评估规格"去 vibe code 原型（"this is what I'm building, these are the guardrails I need"）→ demo → 收集反馈 → "what about this metric? what about sentiment score?" 补进评估。评估清单本身就是更好的提示词与 PRD。</p>
+
+  <h3 id="gtm">原则二：Eval 驱动的不止产品，还有 GTM</h3>
+  <p>"We talked about eval-driven PRD. Another important thing is <b>eval-driven go-to-market, eval-driven selling, eval-driven marketing</b>."（P1 162:32）逻辑很朴素：B2B 客户会问"你的 Agent 凭什么比 OpenAI/Google 的好"——如果你手里有分场景的评测结果，销售就有的聊、官网就有得写。他指出模型厂商发布新模型时都在这么干，"if you build on top of models, you need to take the same approach"。</p>
+</section>
+
+<section id="limits">
+  <h2><span class="num">2.7</span>局限：这不是银弹</h2>
+  <div class="grid c2">
+    <div class="card"><h4 style="margin-top:0;font-size:15px">评估≠全知</h4><p class="muted" style="margin:0;font-size:14px">课程大纲专门有 "Limitations" 一节：评委本身会错、数据集会过时、离线评估模拟不了全部真实分布——所以要有业务指标兜底与灰度发布。</p></div>
+    <div class="card"><h4 style="margin-top:0;font-size:15px">"Evals are not free"</h4><p class="muted" style="margin:0;font-size:14px">算力、标注、平台额度都是成本；这也是课程争取 Braintrust credits、并强调"先跑 5 条也行"的现实原因。</p></div>
+  </div>
+  <div class="callout"><b>本章小结：</b>单元测试 → 只能测确定性；A/B → 太吵太慢太粗；三腿凳 → 可重复、可分层、可自动化。接下来就看第三条腿怎么落地——<a href="03-week1-error-analysis.html">CH03 的 Week 1 实战</a>。</div>
+</section>

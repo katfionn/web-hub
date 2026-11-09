@@ -1,0 +1,84 @@
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 01 · P1 00:00–25:00</p>
+  <h1 style="font-size:40px">开场：这门课为什么值得学</h1>
+  <p class="sub">第一堂课的前 25 分钟没有任何评估技术——全是定位：讲师是谁、这门课与市面课程有何不同、你将拿到什么、以及一个贯穿全程的论断：<b>"当人人都能构建时，判断力与品味才是门槛。"</b></p>
+</section>
+
+<section id="positioning">
+  <h2><span class="num">1.1</span>课程定位："in practice"不是修辞</h2>
+  <div class="bigquote">"I've been working in this domain… my goal is to bring the practical real-world learning. I've built a bunch of eval frameworks and applied them into real-world, large customer scenarios."<cite>— 讲师开场白，P1 00:21 – 00:49（意译）</cite></div>
+  <p>讲师背景自述：CS 本科 → 十年软件工程师 → 因团队 PM 离职转做产品 → 现在负责 <b>Salesforce 的 Agentforce</b>（面向客服/销售/营销的 AI Agent 平台）。他刻意把课程命名为"<b>AI Evals in Practice</b>"，并解释了为什么不泛泛讲 eval：</p>
+  <div class="grid c2">
+    <div class="card">
+      <h4 style="margin-top:0">以 Agent 为"北极星"</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">"These AI agents cover RAG, model-level evals, prompt-level evals, multi-tool calling… if you can learn how to evaluate your agents, pretty much everything is covered."（P1 02:06）相比大量只讲模型评测的在线课程，本课主打 Agent 评测。</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">反"链接式学习"</h4>
+      <p class="muted" style="margin:0;font-size:14.5px">"Search 'what is AI eval' and you'll find 1000 links and still find yourself confused."（P1 02:50）传统测试观（单元测试/回归测试）与"测试非确定性系统"之间的冲突，正是要解构的对象。</p>
+    </div>
+  </div>
+</section>
+
+<section id="objectives">
+  <h2><span class="num">1.2</span>十项学习目标（原片幻灯片 04:37）</h2>
+  <ol style="columns:2;column-gap:40px;font-size:15px;line-height:2">
+    <li>把 evals 讲清楚（对同事、对老板、在电梯里）</li>
+    <li>错误分析作为核心技能</li>
+    <li>Eval 思维，而不只是工具</li>
+    <li>如何定义"什么是成功"</li>
+    <li>构建你的第一个 eval</li>
+    <li>AI 指标 与 业务指标</li>
+    <li>创建你的第一个 eval（rubric 化练习）</li>
+    <li>如何形成你自己的"品味"（taste）</li>
+    <li>理解局限性与影响（组织协作层面）</li>
+    <li>面试场景：如何谈论 AI evals</li>
+  </ol>
+  <p class="muted" style="font-size:14px">以上转写自 04:37 的 "Learning Objectives" 幻灯片；个别条目受分辨率所限按上下文补齐。</p>
+  <div class="callout"><b>隐藏的第 0 条：</b>"You should be able to explain eval to anybody." 讲师反复用"understand（理解）而非 learn（学会）"区分表层学习与建立心智——这也是本站按"心智模型"而非"工具清单"组织内容的依据。</div>
+</section>
+
+<section id="method">
+  <h2><span class="num">1.3</span>课堂机制：为什么设计成"作业 + 答疑 + 互看"</h2>
+  <div class="tl">
+    <div class="tl-item"><span class="t">节奏</span><h4>每周三 5pm PST 直播 + 周一 Office Hours</h4><p>每节讲完留 Q&A 段；课后问题进社区 Q&A 区，"当天或 24 小时内答复"。（P1 13:05 / 157:49）</p></div>
+    <div class="tl-item"><span class="t">作业</span><h4>"Show your work" 机制</h4><p>作业上传到专属板块，讲师逐份查看并在下节课点评优秀作业——"看到你用 eval 概念解决自己的问题"比抄 demo 更有价值。（P1 16:05 – 17:57）</p></div>
+    <div class="tl-item"><span class="t">互评</span><h4>共享记录表</h4><p>学员在 Google Sheet 登记作业（开场时已有 32 条）。规则："别删他人记录，只在末尾追加。"（P1 170:22）</p></div>
+    <div class="tl-item"><span class="t">反馈</span><h4>讲师用评估思维设计课程本身</h4><p>课前学员填"期望收获"，讲师用 AI 汇总校准每节课；课上请大家自评 1–10 分，"第六周再测一次，看有没有进步"——"I'm doing the eval on myself."（P1 12:18 / 166:01）</p></div>
+  </div>
+</section>
+
+<section id="bonus">
+  <h2><span class="num">1.4</span>三份 Bonus：课程的经济学设计</h2>
+  <div class="grid c3">
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent)">① 未出版的书</h4>
+      <p class="muted" style="margin:0;font-size:13.5px">讲师正在审校的 single/multi-agent eval 案例集，结课免费发——"but it comes with effort. You need to show your work."</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent-2)">② Braintrust 额度</h4>
+      <p class="muted" style="margin:0;font-size:13.5px">"Evals are not free" 是学员最怕的现实问题；讲师争取到全员免费 org + credits，"填姓名邮箱，课前自动建好"。（P1 21:11）</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent-3)">③ 求职辅导</h4>
+      <p class="muted" style="margin:0;font-size:13.5px">结课做面试演练："After this course you will be dangerous enough to crack your interview."（P1 24:04）</p>
+    </div>
+  </div>
+  <div class="callout blue"><b>这节最值得记住的一句话：</b>"Tools don't solve your problem. Most of the tools are converging into the same place — 90% is the same approach."（P1 22:48 – 23:14）从第一天起，讲师就在给"工具会变、方法论不会"打地基。</div>
+</section>
+
+<section id="video">
+  <h2><span class="num">1.5</span>课程入门视频：19 分钟的"问题宣言"</h2>
+  <p>课程平台首页嵌了一支约 19 分钟的导览视频《<b>The Unexpected Journey of AI Deployments</b>》（Instructor 出镜），讲师现场打开预览给学员演示"去哪找材料"。它其实就是第一课的问题宣言——用一张 A/B 实验曲线和一块"退化满屏"的指标网格说明：<b>传统的发布方法论救不了 LLM 应用</b>。</p>
+  <figure style="margin:26px 0">
+    <img src="assets/img/p1_ab_chart.jpg" alt="课程入门视频中的 A/B 测试案例画面（原片 P1 04:15 平台预览）">
+    <figcaption><span class="tag-time">P1 · 04:15</span> 平台首页的视频预览画面：A/B 显著性（p=0.04）与逐指标"大量退化"的对照。图内论证的重建见 <a href="charts.html#ch-ab">图表 03</a>。</figcaption>
+  </figure>
+  <p>视频里还有几个反复出现的判断（后续周次会逐一展开，详见 <a href="02-why-tests-fail.html">CH02</a>）：LLM 应用"像 SaaS 一样快速迭代"，但输出<b>非确定性、高方差</b>；A/B 测试"需要巨大样本量"且只给总体胜负、不给分层洞察；于是需要一套"离线的、按场景的、可回归的"评估体系，甚至要有专职的 Evals 团队与内部工具（见 <a href="charts.html#ch-team">图表 09</a>）。</p>
+</section>
+
+<section id="why-now">
+  <h2><span class="num">1.6</span>一个论断：构建变容易后，什么变贵了？</h2>
+  <div class="bigquote">"When building is easy — when anybody can build anything talking to Cloud Code or your personal agents — then what are the skills that are going to matter? Judgment and taste."<cite>— 讲师，P1 19:32 – 20:04（意译）</cite></div>
+  <p>这条论断是整门课的价值主张：评估体系就是把"判断力与品味"工程化的装置——把人的 taste 变成可度量、可复现、可自动化的标准。后半程他还会讲"eval 驱动"如何外溢到 PRD、GTM、甚至销售话术（<a href="02-why-tests-fail.html#gtm">CH02 · 6.3</a>）。</p>
+</section>

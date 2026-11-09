@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>通往 LLM Judge · AI Evals 课程精华</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="progress" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:99;transition:width .1s"></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">EV</span><b>AI Evals 实战精华</b></a>
+  <span class="spacer"></span>
+  <button class="iconbtn" id="searchBtn" title="搜索 (Ctrl+K)">⌕</button>
+  <button class="iconbtn" id="themeBtn" title="切换明暗主题">◐</button>
+  <button class="iconbtn" id="navBtn" title="目录" style="display:none">☰</button>
+</header>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <p class="kicker">课程地图</p>
+    <a href="index.html"><span class="no">00</span>总览 · 课程地图</a>
+    <a href="01-opening.html"><span class="no">01</span>开场：这门课为什么值得学</a>
+    <a href="02-why-tests-fail.html"><span class="no">02</span>为什么单元测试不够用</a>
+    <a href="03-week1-error-analysis.html"><span class="no">03</span>Week 1 实战：Trace → 标注 → 错误分组</a>
+    <a href="04-trace-multiturn.html"><span class="no">04</span>读 Trace 与多轮评估</a>
+    <a href="05-tooling.html"><span class="no">05</span>工具全景：平台选型与工作流</a>
+    <a href="06-llm-judge.html" class="active"><span class="no">06</span>通往 LLM Judge</a>
+    <a href="charts.html"><span class="no">07</span>图表库（重建）</a>
+    <a href="cheatsheet.html"><span class="no">08</span>速查手册</a>
+  </nav>
+  <main class="main">
+    <div class="content">
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 06 · P2 66:00–72:00 + Week 2 预告</p>
+  <h1 style="font-size:40px">通往 LLM Judge</h1>
+  <p class="sub">答疑场最后十分钟，讲师预演了整个课程的后半程：代码 grader 只是脚手架，真正的评委是 LLM——而 LLM Judge 的全部意义，在于<b>它是否与人类的判断站在同一边</b>。</p>
+</section>
+
+<section id="why-judge">
+  <h2><span class="num">6.1</span>为什么 Week 2 是整门课的山峰</h2>
+  <div class="bigquote">"Week two is all about using an LLM as a judge… because it is very important to align your LLM judge with the human preferences and with human annotation. That's why the exercise we did in week one."<cite>— 讲师，P2 10:06（意译）</cite></div>
+  <p>三个递进判断：</p>
+  <ol>
+    <li><b>规模不可回避。</b>人工标注几十条可以，几千条不行；评估要进入 CI/CD（<a href="charts.html#ch-ladder">成熟度阶梯</a>第 3 级）就必须把评委自动化。</li>
+    <li><b>自动化不等于随便问 LLM。</b>Week 2 会换成"真正的 LLM 当评委"，且课程 harness 支持切换不同 judge——"you can switch between Gemini versus OpenAI and experience the different judges and their strengths and weaknesses"（P1 156:04）。换模型就换判断，说明评委本身需要被校准。</li>
+    <li><b>对齐是唯一标准。</b>没有 Week 1 的人工标注当锚点，你无法知道 Judge 什么时候在胡说。</li>
+  </ol>
+</section>
+
+<section id="alignment">
+  <h2><span class="num">6.2</span>讲师对 Week 2 的设计：把"对齐"做成游戏</h2>
+  <div class="callout teal"><b>原话速递（P2 70:41 – 71:20）：</b>"It gets very dry and very heavy — a lot of judge alignment. I'm trying to gamify it: we all vote, I don't agree with this response… then we align the judge with our group consensus. Because that's the whole point: no matter if AI says pass — if we as humans, what we are looking for, that's not aligned, then it doesn't matter."</div>
+  <p>游戏化的结构本身就是方法论：<b>人人独立投 pass/fail → 讨论分歧 → 形成群体共识 → 用共识去校准 Judge</b>。与 Week 1 相比多了一个关键动作——把"标注一致性"从隐性假设变成显式流程。</p>
+</section>
+
+<section id="grader-spectrum">
+  <h2><span class="num">6.3</span>从代码 grader 到模型 grader 的迁徙路线</h2>
+  <p>"The idea is: high level code-based graders, and more model-based graders."（P2 67:56）不是推倒重来，而是混合：确定性部分留代码，语义判定交给 Judge。</p>
+  <table>
+    <tr><th>阶段</th><th>Grader</th><th>典型判据</th><th>课程位置</th></tr>
+    <tr><td>Week 1</td><td>正则 / 断言</td><td>"回复里是否出现订单号"、"是否走了退款分支"</td><td>本录屏已覆盖</td></tr>
+    <tr><td>Week 2</td><td>LLM Judge + rubric</td><td>"是否先认证后动数据"、"语气是否合规"、"是否解决用户诉求"</td><td>下周开讲</td></tr>
+    <tr><td>Week 2+</td><td>混合（代码先行，模型兜底）</td><td>代码判 obligations（硬性检查），Judge 判 nuanced quality</td><td>随周推进</td></tr>
+  </table>
+  <p class="muted" style="font-size:14px">讲师还提到课程第 5 周专门讲 RAG 评估（P2 46:55），届时 Judge 判据会加入 faithfulness 等指标。</p>
+</section>
+
+<section id="shipgate">
+  <h2><span class="num">6.4</span>终点站：Ship Gate</h2>
+  <p>所有环节最终收敛到一个决策。讲师对"点几下就跑完评测、决定发布"的幻想泼了冷水：</p>
+  <div class="bigquote">"Ultimately it will come down to: is it meeting my taste? Is it meeting my threshold criteria? We will talk about those — how do we define ship gates in more detail."<cite>— 讲师，P2 66:35 – 66:57</cite></div>
+  <p>Ship Gate 的定义要素（散落在全场的线索汇总）：</p>
+  <div class="grid c3">
+    <div class="card"><h4 style="margin-top:0;font-size:15px">① 代表性数据集</h4><p class="muted" style="margin:0;font-size:13.5px">真实流量 + 合成场景混合；按问题类型分层</p></div>
+    <div class="card"><h4 style="margin-top:0;font-size:15px">② 与人对齐的评委</h4><p class="muted" style="margin:0;font-size:13.5px">held-out 集上验证过与人工标注的一致性</p></div>
+    <div class="card"><h4 style="margin-top:0;font-size:15px">③ 阈值与红线</h4><p class="muted" style="margin:0;font-size:13.5px">总体通过率阈值 + 关键场景零容忍（如安全类）</p></div>
+  </div>
+  <div class="callout"><b>把闭环合上：</b>Ship Gate 说"不过"时，回到 <a href="charts.html#ch-loop">Eval 闭环</a>第 ⑦ 步——用失败样本调优（提示词/检索/模型），再跑、再校准。这个循环转得越快，团队发版越敢。</div>
+</section><nav class="pager"><a href="05-tooling.html"><div class="lbl">← 上一章</div><div class="ttl">工具全景：平台选型与工作流</div></a><a class="next" href="charts.html"><div class="lbl">下一章 →</div><div class="ttl">图表库（重建）</div></a></nav>
+    </div>
+    <footer>依据 Bilibili《AI 评估体系实战：面向工程师与产品经理》两分P 全程整理 · 图表与引述均标注视频时间戳 · <a href="index.html" style="color:inherit">返回总览</a></footer>
+  </main>
+</div>
+<div class="searchbox" id="searchbox">
+  <div class="searchpanel">
+    <input type="text" placeholder="搜索全文：概念 / 指标 / 工具 / 时间戳…（Ctrl+K）">
+    <div class="results"></div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox"><img alt="放大查看"></div>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

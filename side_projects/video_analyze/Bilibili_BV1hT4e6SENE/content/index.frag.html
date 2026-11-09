@@ -1,0 +1,110 @@
+<section id="hero" class="hero">
+  <p class="kicker">Maven 直播课实录 · Session 1 + Week-1 Office Hours · 4 小时 14 分浓缩</p>
+  <h1>给 AI 应用的<br><span style="background:linear-gradient(120deg,var(--accent),var(--accent-4));-webkit-background-clip:text;background-clip:text;color:transparent">评估体系</span>，从第一块砖开始</h1>
+  <p class="sub">这是一门"面向工程师与产品经理的 AI Evals 实战课"。两个分P共 <b>4h14m</b> 的录屏里，真正的硬核内容藏在开场的方法论与课后答疑中——本页把你需要的一切：心智模型、作业动线、工具全景、金句与图表，全部提炼重建于此。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="v">2</div><div class="k">分P：第一堂课 + Week 1 答疑</div></div>
+    <div class="stat"><div class="v">4h14m</div><div class="k">总时长（P1 3h02m / P2 1h12m）</div></div>
+    <div class="stat"><div class="v">11</div><div class="k">重建图表（SVG 矢量重绘）</div></div>
+    <div class="stat"><div class="v">8</div><div class="k">章节 · 全文可搜索</div></div>
+  </div>
+
+  <div class="callout"><b>先说实话：</b>这两段录屏是"直播课实录"——超过一半时长是 60 多位学员的自我介绍与自由问答。所以本站按<b>信息密度</b>而不是按时间线组织：把讲师的评估方法论、Week&nbsp;1 作业的完整动线、以及对十几个真实提问的解答，全部抽出来结构化；学员环节只保留能反推课程设计逻辑的部分。</div>
+</section>
+
+<section id="takeaways">
+  <h2><span class="num">TL;DR</span>五条核心结论</h2>
+  <div class="grid c2">
+    <div class="card">
+      <p class="kicker" style="margin:0;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em">01 · 心智模型</p>
+      <h3 style="margin-top:6px">评估是"三腿凳"，缺一条腿就站不住</h3>
+      <p class="muted" style="margin:0">数据集（可版本化）+ 指标与评委（人 / LLM / 混合）+ 实验（把两者跑起来）。Braintrust、LangSmith、Agentforce 全是这张凳子的不同外观。详见 <a href="02-why-tests-fail.html">第 2 章</a>。</p>
+    </div>
+    <div class="card">
+      <p class="kicker" style="margin:0;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em">02 · 第一性技能</p>
+      <h3 style="margin-top:6px">第一周只练一件事：错误分析</h3>
+      <p class="muted" style="margin:0">读 trace → 标 pass/fail → 按类型分组（"40 条里多少条是退款问题"）。不追求标注 100% 正确，追求建立"看见问题"的肌肉。详见 <a href="03-week1-error-analysis.html">第 3 章</a>。</p>
+    </div>
+    <div class="card">
+      <p class="kicker" style="margin:0;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em">03 · 判定哲学</p>
+      <h3 style="margin-top:6px">Pass/Fail 要用"业务工作流"视角判</h3>
+      <p class="muted" style="margin:0">用户说"被扣款两次"，Agent 反问单号——不是逃避，是对的：先认证身份再动数据。标注要站在真实工作流上，而不是追求唯一标准答案。</p>
+    </div>
+    <div class="card">
+      <p class="kicker" style="margin:0;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em">04 · 工具观</p>
+      <h3 style="margin-top:6px">80% 的概念在所有平台里长得一样</h3>
+      <p class="muted" style="margin:0">metrics≈scores，test set≈dataset，playground 通用。学会概念，任何工具五分钟上手；反之换十次工具也不会做评估。详见 <a href="05-tooling.html">第 5 章</a>。</p>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <p class="kicker" style="margin:0;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em">05 · 终局</p>
+      <h3 style="margin-top:6px">一切评估最终服务于一个决策：Ship or not ship</h3>
+      <p class="muted" style="margin:0">从 playground 单测 → 回归集批量实验（CI/CD 触发、凌晨跑批）→ Ship Gate 发布门禁。LLM Judge 是通往这个闭环的最后一环——而它的价值取决于<b>是否与人类共识对齐</b>："AI 说 pass，但人不同意，那就没有意义。"</p>
+    </div>
+  </div>
+</section>
+
+<section id="map">
+  <h2><span class="num">MAP</span>按信息密度重排的课程地图</h2>
+  <p class="lead">原始录屏的时间线和干货分布严重错位——下面这张分布图说明为什么本站要重新组织内容：</p>
+</section>
+
+<section id="chapters">
+  <h2><span class="num">CH</span>章节</h2>
+  <div class="grid c2" style="margin-top:18px">
+    <a class="chapcard card" href="01-opening.html">
+      <span class="n">CH 01 · P1 00:00–25:00</span>
+      <h3>开场：这门课为什么值得学</h3>
+      <p>课程定位、"真实评估经验"的反面教材、入门视频《The Unexpected Journey of AI Deployments》与十项学习目标——为什么评估是今天 AI 产品最贵的短板。</p>
+      <div class="meta"><span class="badge orange">动机</span><span class="badge">课程设计</span></div>
+    </a>
+    <a class="chapcard card" href="02-why-tests-fail.html">
+      <span class="n">CH 02 · P1 04:00 / 150:00–179:00</span>
+      <h3>为什么单元测试不够用</h3>
+      <p>非确定性系统的测试悖论、单元测试的四条边界、A/B 测试为何失灵、三腿凳与双桶指标、阈值是场景的函数（含 blast radius 风险模型）。</p>
+      <div class="meta"><span class="badge teal">核心理论</span><span class="badge">重建图表 ×3</span></div>
+    </a>
+    <a class="chapcard card" href="03-week1-error-analysis.html">
+      <span class="n">CH 03 · P1 + P2 全程主线索</span>
+      <h3>Week 1 实战：Trace → 标注 → 错误分组</h3>
+      <p>课程作业的完整动线：跑通 Pronto 客服 Agent、把 traces 注入 Braintrust、人工标注 pass/fail、聚簇失败类型，为下周 LLM Judge 备料。</p>
+      <div class="meta"><span class="badge orange">实战动线</span><span class="badge">可操作</span></div>
+    </a>
+    <a class="chapcard card" href="04-trace-multiturn.html">
+      <span class="n">CH 04 · P2 36:00–46:00</span>
+      <h3>读 Trace 与多轮评估</h3>
+      <p>Session/span 层级解剖、20/80 阅读顺序、延迟/成本/首 token 指标、多轮对话怎么逐轮+整体评估。</p>
+      <div class="meta"><span class="badge teal">技能</span><span class="badge">重建图表 ×2</span></div>
+    </a>
+    <a class="chapcard card" href="05-tooling.html">
+      <span class="n">CH 05 · P2 21:00–59:00</span>
+      <h3>工具全景：平台选型与工作流</h3>
+      <p>UI 与 SDK 的分工、Braintrust/LangSmith/CrewAI/Agentforce 横向对比、playground→批量实验→CI/CD 的成熟度阶梯、术语映射表。</p>
+      <div class="meta"><span class="badge violet">选型</span><span class="badge">重建图表 ×3</span></div>
+    </a>
+    <a class="chapcard card" href="06-llm-judge.html">
+      <span class="n">CH 06 · P2 66:00–72:00</span>
+      <h3>通往 LLM Judge</h3>
+      <p>从代码 grader 到模型 grader 的光谱、Week 2 预告：评委调优、held-out 集、以及"与人类共识对齐"为什么是全部意义所在。</p>
+      <div class="meta"><span class="badge orange">下一程</span></div>
+    </a>
+    <a class="chapcard card" href="charts.html">
+      <span class="n">CH 07</span>
+      <h3>图表库（矢量重建）</h3>
+      <p>视频中的手绘示意图与幻灯片图表，全部用 SVG 重绘：三腿凳、Eval 闭环、Trace 结构、工具架构、成熟度阶梯……附原片时间戳。</p>
+      <div class="meta"><span class="badge">9 张</span><span class="badge teal">矢量</span></div>
+    </a>
+    <a class="chapcard card" href="cheatsheet.html">
+      <span class="n">CH 08</span>
+      <h3>速查手册</h3>
+      <p>一页纸带走：标注流程 checklist、trace 阅读清单、术语映射、金句墙、两分P的完整时间轴。</p>
+      <div class="meta"><span class="badge">打印友好</span></div>
+    </a>
+  </div>
+</section>
+
+<section id="honest">
+  <h2><span class="num">NOTE</span>关于"精华"的结构性发现</h2>
+  <p>看完 4 小时素材后有一个必须诚实汇报的事实：<b>P1 前 2.5 小时是六十多位学员轮流自我介绍</b>（三问：从哪来 / 你想解决的评估问题 / 你的"高质量"标准），P1 结尾约 24 分钟才是讲师正式讲授 Unit 1；<b>P2 整段是 Week 1 答疑 Office Hours</b>。因此本站在章节里给每段正文都标注了视频时间戳——想核对原片可以按图索骥；同时把那些只有一句、但极有含金量的讲师口头回答全部收进了各章。</p>
+  <div class="callout teal"><b>学习路径建议：</b>如果你时间有限——先读 <a href="02-why-tests-fail.html">CH02</a>（理论），再按 <a href="03-week1-error-analysis.html">CH03</a> 动手做一遍作业，遇到工具问题看 <a href="05-tooling.html">CH05</a>，最后读 <a href="06-llm-judge.html">CH06</a> 预习 LLM Judge。</div>
+</section>

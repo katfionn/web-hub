@@ -1,0 +1,519 @@
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Charts · Rebuilt</p>
+  <h1 style="font-size:40px">图表库：从原片手绘到矢量重建</h1>
+  <p class="sub">视频里的图表大多是讲师现场手绘、或夹在幻灯片与 Google Doc 里的示意图。这一页把其中 <b>9 张核心图表</b>全部用 SVG 重绘——比 720p 截图清晰，标注统一，并且完整保留了原片的论证逻辑。每张图都标注了出处时间戳。</p>
+</section>
+
+<section id="ch-stool">
+  <h2><span class="num">图 01</span>三腿凳：评估体系的最小完整结构</h2>
+  <p class="lead">P1 课堂里讲师画过的那个"凳子"——P2 答疑时他直接引用："<i>if you remember the diagram I had, like a stool or a chair with three legs</i>（21:00 前）。无论你打开 Braintrust、LangSmith、CrewAI 还是 Agentforce，看到的都是这张凳子的不同皮肤。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 860 470" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <!-- seat -->
+      <rect x="270" y="96" width="320" height="46" rx="12" fill="none" stroke="var(--ink)" stroke-width="2.2" transform="rotate(-.6 430 119)"/>
+      <text x="430" y="118" text-anchor="middle" font-family="var(--serif)" font-size="19" font-weight="700" fill="var(--ink)">可靠的 AI 评估体系</text>
+      <text x="430" y="134" text-anchor="middle" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">ship decision you can trust</text>
+      <!-- legs -->
+      <g stroke-linecap="round" fill="none">
+        <path d="M310 142 L262 392" stroke="var(--accent)" stroke-width="7" transform="rotate(.4 310 142)"/>
+        <path d="M430 142 L430 396" stroke="var(--accent-2)" stroke-width="7"/>
+        <path d="M550 142 L598 392" stroke="var(--accent-3)" stroke-width="7" transform="rotate(-.4 550 142)"/>
+      </g>
+      <!-- labels -->
+      <g font-family="var(--sans)">
+        <text x="205" y="416" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--accent)">① 数据集</text>
+        <text x="205" y="434" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">Dataset · 版本化可复用</text>
+        <text x="430" y="420" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--accent-2)">② 指标与评委</text>
+        <text x="430" y="438" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">Metrics &amp; Judges · 人/LLM/混合</text>
+        <text x="655" y="416" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--accent-3)">③ 实验</text>
+        <text x="655" y="434" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">Experiments · 把①②跑起来</text>
+      </g>
+      <!-- annotations -->
+      <g font-size="11.5" font-family="var(--mono)" fill="var(--ink-2)">
+        <text x="60" y="200">回归集 / 单元集 / 红队安全集</text>
+        <text x="60" y="216">—— 都只是"命名不同的数据集"</text>
+        <text x="640" y="200">human judge</text>
+        <text x="640" y="216">LLM-as-judge</text>
+        <text x="640" y="232">hybrid &nbsp;·&nbsp; JEV*</text>
+        <text x="640" y="266">* 课程里提到的新评委：</text>
+        <text x="640" y="282">非 Transformer 的 system-1 模型</text>
+      </g>
+      <!-- side platform list -->
+      <g font-size="12" font-family="var(--mono)" fill="var(--ink-3)">
+        <text x="60" y="330">Braintrust = 同一张凳子的 UI 皮肤</text>
+        <text x="60" y="348">LangSmith = 同一张凳子的 UI 皮肤</text>
+        <text x="60" y="366">Agentforce = 同一张凳子的 UI 皮肤</text>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 06:28 – 08:00 手绘讲解</span><span class="muted">"No matter which product you're looking at… three legs: your dataset, your metrics &amp; judges, then you set it up as an experiment."</span></figcaption>
+  </figure>
+
+  <table>
+    <tr><th>腿</th><th>讲师原话要点</th><th>落地要点</th></tr>
+    <tr><td><b style="color:var(--accent)">① 数据集</b></td><td>"a place to start creating your test scenarios, AKA dataset… and then it is versioned as you update them"</td><td>按用途命名与版本管理：<code>regression</code> / <code>unit</code> / <code>security red-team</code> 各自独立演进</td></tr>
+    <tr><td><b style="color:var(--accent-2)">② 指标与评委</b></td><td>"you define what metrics you will use and what judge you will use"</td><td>评分可以是平台自带（factuality / security check），也可以自定义 scorer；评委分为人、LLM、混合三类</td></tr>
+    <tr><td><b style="color:var(--accent-3)">③ 实验</b></td><td>"once you have those three legs… you can set it up as an experiment"</td><td>实验 = 数据集 × 评委 × 被测对象的组合执行，产出可比较的分数表</td></tr>
+  </table>
+</section>
+
+<section id="ch-loop">
+  <h2><span class="num">图 02</span>Eval 闭环：从 trace 到 ship gate</h2>
+  <p class="lead">P2 结尾讲师用一篇博客（“How to write evals for anything”）串起全课程：<i>"look into the traces, annotate and find out what are the failures → pick a grader → run → decide ship or not ship → 不过就 tune、再跑、校准"</i>。这是整个课程的主循环，Week 1 只在最左端（看+标），Week 2 补上 grader。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 430" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/>
+        </marker>
+        <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <!-- nodes -->
+      <g font-family="var(--sans)">
+        <!-- 1 -->
+        <rect x="40" y="60" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="125" y="86" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">① 看 Traces</text>
+        <text x="125" y="105" text-anchor="middle" font-size="11" fill="var(--ink-3)">真实对话 / spans</text>
+        <!-- 2 -->
+        <rect x="250" y="60" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="335" y="86" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">② 标注 Pass/Fail</text>
+        <text x="335" y="105" text-anchor="middle" font-size="11" fill="var(--ink-3)">人工判断 + 理由</text>
+        <!-- 3 -->
+        <rect x="460" y="60" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="545" y="86" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">③ 错误分组</text>
+        <text x="545" y="105" text-anchor="middle" font-size="11" fill="var(--ink-3)">退款 / 保修 / 上下文…</text>
+        <!-- 4 -->
+        <rect x="670" y="60" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent-2)" stroke-width="2"/>
+        <text x="755" y="86" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">④ 选 Grader</text>
+        <text x="755" y="105" text-anchor="middle" font-size="11" fill="var(--ink-3)">代码 → LLM Judge</text>
+        <!-- 5 -->
+        <rect x="670" y="240" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent-2)" stroke-width="2"/>
+        <text x="755" y="266" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">⑤ 跑实验</text>
+        <text x="755" y="285" text-anchor="middle" font-size="11" fill="var(--ink-3)">数据集 × 评委</text>
+        <!-- 6 -->
+        <rect x="400" y="240" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent-3)" stroke-width="2"/>
+        <text x="485" y="266" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">⑥ Ship Gate</text>
+        <text x="485" y="285" text-anchor="middle" font-size="11" fill="var(--ink-3)">发不发版？</text>
+        <!-- 7 -->
+        <rect x="130" y="240" width="170" height="62" rx="12" fill="var(--paper-2)" stroke="var(--accent-3)" stroke-width="2"/>
+        <text x="215" y="266" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">⑦ 调优 / 校准</text>
+        <text x="215" y="285" text-anchor="middle" font-size="11" fill="var(--ink-3)">tune → 回到 ①</text>
+        <!-- arrows -->
+        <g stroke="var(--ink-2)" stroke-width="1.8" fill="none" marker-end="url(#arr)">
+          <line x1="210" y1="91" x2="246" y2="91"/>
+          <line x1="420" y1="91" x2="456" y2="91"/>
+          <line x1="630" y1="91" x2="666" y2="91"/>
+          <line x1="755" y1="122" x2="755" y2="236"/>
+          <line x1="670" y1="271" x2="574" y2="271"/>
+          <line x1="400" y1="271" x2="304" y2="271"/>
+        </g>
+        <path d="M215 240 C 215 190, 125 200, 125 128" stroke="var(--accent)" stroke-width="1.8" fill="none" stroke-dasharray="6 5" marker-end="url(#arrR)"/>
+        <text x="150" y="196" font-size="11" font-family="var(--mono)" fill="var(--accent)">不达标，回到原问题</text>
+      </g>
+      <!-- week annotations -->
+      <g font-family="var(--mono)" font-size="11" fill="var(--ink-3)">
+        <text x="40" y="360">Week 1：①②③（本录屏覆盖）</text>
+        <text x="330" y="360">Week 2：④（LLM Judge）</text>
+        <text x="620" y="360">Week 3+：⑤⑥（实验 / 发布门禁）</text>
+        <text x="40" y="384">"The muscle we are building is looking at traces, finding issues, grouping them — so we can decide what needs to be fixed."</text>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 67:20 – 68:00</span> 讲师拆解博客 "How to write evals for anything"：loop 的每一环对应课程的每一周。</figcaption>
+  </figure>
+</section>
+
+<section id="ch-ab">
+  <h2><span class="num">图 03</span>为什么 A/B 测试救不了 LLM 应用</h2>
+  <p class="lead">课程平台首页嵌着一支约 19 分钟的入门视频《The Unexpected Journey of AI Deployments》（Instructor 出镜，学员课后自看）。讲师在 P1 开场打开它的预览页演示"去哪找材料"，视频用一张 A/B 实验曲线和一块"满屏退化"的指标表，论证了传统发布方法论在非确定性系统上为何失灵——这是整门课的问题起点。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 400" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- chart frame -->
+        <rect x="50" y="40" width="360" height="240" rx="8" fill="none" stroke="var(--line)"/>
+        <text x="50" y="26" font-size="12.5" font-weight="700" fill="var(--ink-2)">A/B Test v3 Overall (Cumulative) <tspan font-family="var(--mono)" font-weight="400" fill="var(--ink-3)">原片 04:15</tspan></text>
+        <!-- axes -->
+        <g stroke="var(--line)">
+          <line x1="70" y1="260" x2="395" y2="260"/>
+          <line x1="70" y1="60" x2="70" y2="260"/>
+        </g>
+        <g font-size="10" font-family="var(--mono)" fill="var(--ink-3)">
+          <text x="70" y="276">0%</text><text x="160" y="276">20%</text><text x="250" y="276">40%</text><text x="340" y="276">60%</text>
+          <text x="60" y="66" text-anchor="end">10</text><text x="60" y="130" text-anchor="end">6</text><text x="60" y="196" text-anchor="end">2</text>
+        </g>
+        <!-- curves: noisy random walks -->
+        <path d="M70 250 C90 232, 100 246, 112 228 C124 214, 132 236, 146 214 C158 200, 168 226, 182 210 C196 196, 204 224, 218 204 C232 190, 240 210, 254 196 C268 184, 276 206, 290 192 C304 180, 312 198, 326 186 C340 176, 350 192, 366 182 C378 176, 386 186, 394 180" fill="none" stroke="var(--accent)" stroke-width="2.4"/>
+        <path d="M70 250 C92 240, 102 234, 116 236 C130 238, 138 222, 152 224 C166 226, 174 214, 188 218 C202 222, 210 208, 224 212 C238 216, 246 202, 260 206 C274 210, 282 198, 296 202 C310 206, 318 194, 332 198 C346 202, 354 192, 368 196 C378 198, 386 192, 394 194" fill="none" stroke="var(--accent-5)" stroke-width="2.4"/>
+        <g font-size="10.5" font-family="var(--mono)">
+          <text x="330" y="150" fill="var(--accent)">v2 (orange)</text>
+          <text x="330" y="166" fill="var(--accent-5)">v1 (blue)</text>
+        </g>
+        <!-- p-value callout -->
+        <g>
+          <rect x="250" y="86" width="120" height="40" rx="8" fill="color-mix(in srgb, var(--accent) 10%, var(--card))" stroke="var(--accent)" stroke-dasharray="4 3"/>
+          <text x="310" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--accent)">Means v1 vs v2</text>
+          <text x="310" y="119" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-2)">p = 0.04 显著 ✓</text>
+        </g>
+        <!-- right: metric grid -->
+        <g>
+          <text x="460" y="26" font-size="12.5" font-weight="700" fill="var(--ink-2)">同一版本：逐指标看，退化满屏 <tspan font-family="var(--mono)" font-weight="400" fill="var(--ink-3)">原片 19:32</tspan></text>
+          <g>
+            <rect x="460" y="40" width="110" height="34" rx="5" fill="color-mix(in srgb, var(--accent) 12%, var(--card))" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="515" y="61" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700">much worse ↓</text>
+            <rect x="576" y="40" width="110" height="34" rx="5" fill="color-mix(in srgb, var(--accent-4) 10%, var(--card))" stroke="var(--accent-4)" stroke-width="1.2"/>
+            <text x="631" y="61" text-anchor="middle" font-size="10.5" fill="var(--accent-4)">worse ↓</text>
+            <rect x="692" y="40" width="110" height="34" rx="5" fill="color-mix(in srgb, var(--accent-2) 9%, var(--card))" stroke="var(--accent-2)" stroke-width="1.2"/>
+            <text x="747" y="61" text-anchor="middle" font-size="10.5" fill="var(--accent-2)">improved ↑</text>
+            <g font-size="9.5" font-family="var(--mono)" fill="var(--ink-3)">
+              <rect x="460" y="80" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="515" y="99" text-anchor="middle">metric 31</text>
+              <rect x="576" y="80" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="631" y="99" text-anchor="middle">metric 32</text>
+              <rect x="692" y="80" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="747" y="99" text-anchor="middle">metric 33</text>
+              <rect x="460" y="116" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="515" y="135" text-anchor="middle">metric 34</text>
+              <rect x="576" y="116" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="631" y="135" text-anchor="middle">metric 35</text>
+              <rect x="692" y="116" width="110" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="747" y="135" text-anchor="middle">metric 36</text>
+              <rect x="460" y="152" width="110" height="118" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="515" y="215" text-anchor="middle">… 共几十项指标</text>
+              <rect x="576" y="152" width="110" height="118" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="631" y="215" text-anchor="middle">大多"更差"</text>
+              <rect x="692" y="152" width="110" height="118" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="747" y="215" text-anchor="middle">少数"更好"</text>
+            </g>
+          </g>
+        </g>
+        <!-- bottom conclusion -->
+        <g>
+          <rect x="50" y="300" width="752" height="70" rx="10" fill="color-mix(in srgb, var(--accent) 6%, var(--card))" stroke="var(--accent)" stroke-dasharray="5 4"/>
+          <text x="70" y="326" font-size="13.5" font-weight="700" fill="var(--ink)">讲师的板书画结论（原片 15:45 / 17:15）：</text>
+          <text x="70" y="348" font-size="13" fill="var(--ink-2)">"A/B testing is not going to work" —— LLM 应用像 SaaS 一样<b>非确定性、高方差</b>；均值指标 p=0.04 显著，掩盖了逐指标的集体退化。</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P1 · 04:15 / 10:45 / 15:45 / 17:15（视频预览）</span> 课程入门视频中的关键论证链。中间版本网格为原片示意（原格过小无法逐项辨认，保留其版式与语义）。</figcaption>
+  </figure>
+
+  <div class="callout blue"><b>论点拆解：</b>A/B 测试的三个硬伤——① 需要巨大样本量才有统计力；② LLM 输出非确定性、方差高，均值不告诉你"错在哪类问题上"；③ 只给一个总体的胜负结论，不给"哪个失误让用户流失"的可执行洞察。Evals 的解法恰恰是把"逐类问题"变成可测量的条目。</div>
+</section>
+
+<section id="ch-trace">
+  <h2><span class="num">图 04</span>Trace 解剖：Session → Turn → Span → Tool Call</h2>
+  <p class="lead">P2 里讲师反复强调："先看 chat transcript（20/80），再下钻 spans"。这张结构图还原了 Braintrust 界面里那个多轮对话的层级：每个 turn 有 root span 和 LLM span，span 里藏着延迟、token、成本和工具调用链。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 470" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- session -->
+        <rect x="40" y="30" width="520" height="40" rx="9" fill="var(--paper-2)" stroke="var(--ink-2)" stroke-width="1.6"/>
+        <text x="56" y="55" font-size="13.5" font-weight="700" fill="var(--ink)">Session（一次完整会话）</text>
+        <text x="300" y="55" font-size="11" font-family="var(--mono)" fill="var(--ink-3)">多个 turn，共享上下文 · 原片 P2 24:46</text>
+        <!-- turns -->
+        <g>
+          <rect x="70" y="96" width="230" height="34" rx="8" fill="var(--card)" stroke="var(--line)"/>
+          <text x="86" y="118" font-size="12" fill="var(--ink-2)">Turn 1 · hi</text>
+          <rect x="320" y="96" width="230" height="34" rx="8" fill="var(--card)" stroke="var(--line)"/>
+          <text x="336" y="118" font-size="12" fill="var(--ink-2)">Turn 2 · where is my order?</text>
+          <rect x="70" y="140" width="480" height="34" rx="8" fill="var(--card)" stroke="var(--line)"/>
+          <text x="86" y="162" font-size="12" fill="var(--ink-2)">Turn 3 · I need to return my order → 上下文逐轮累积（P2 45:05）</text>
+        </g>
+        <!-- span tree -->
+        <g>
+          <rect x="70" y="206" width="480" height="38" rx="8" fill="color-mix(in srgb, var(--accent-2) 8%, var(--card))" stroke="var(--accent-2)" stroke-width="1.8"/>
+          <text x="86" y="230" font-size="12.5" font-weight="700" fill="var(--ink)">Root Span</text>
+          <text x="200" y="230" font-size="11" font-family="var(--mono)" fill="var(--ink-3)">整个 turn 的顶层跨度</text>
+
+          <rect x="110" y="262" width="440" height="38" rx="8" fill="color-mix(in srgb, var(--accent) 7%, var(--card))" stroke="var(--accent)" stroke-width="1.8"/>
+          <text x="126" y="286" font-size="12.5" font-weight="700" fill="var(--ink)">LLM Span</text>
+          <text x="216" y="286" font-size="11" font-family="var(--mono)" fill="var(--ink-3)">model=gpt-5 · input / output · 23 tokens · 0.9s</text>
+
+          <rect x="150" y="318" width="400" height="38" rx="8" fill="var(--card)" stroke="var(--line)"/>
+          <text x="166" y="342" font-size="12" fill="var(--ink-2)">Tool Call · get_order_status(order_id) → "已发货，预计周三到达"</text>
+
+          <rect x="190" y="374" width="360" height="38" rx="8" fill="var(--paper-2)" stroke="var(--line)" stroke-dasharray="4 3"/>
+          <text x="206" y="398" font-size="12" fill="var(--ink-2)">Raw trace · YAML / JSON（全量细节）</text>
+        </g>
+        <!-- connectors -->
+        <g stroke="var(--ink-3)" stroke-width="1.4" fill="none">
+          <path d="M100 130 L100 250 L108 250" />
+          <path d="M350 130 L350 206"/>
+          <path d="M330 244 L330 262"/>
+          <path d="M330 300 L330 318"/>
+          <path d="M330 356 L330 374"/>
+        </g>
+        <!-- right panel: metrics to read -->
+        <g>
+          <rect x="600" y="96" width="240" height="316" rx="10" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="618" y="122" font-size="12.5" font-weight="700" fill="var(--ink)">每个 span 要读的</text>
+          <g font-size="11.5" fill="var(--ink-2)" font-family="var(--mono)">
+            <text x="618" y="148">· input / output 全文</text>
+            <text x="618" y="172">· tokens 消耗</text>
+            <text x="618" y="196">· 总耗时 (latency)</text>
+            <text x="618" y="220">· 首 token 时间</text>
+            <text x="618" y="244">· cost</text>
+            <text x="618" y="268">· tool 调用链 &amp; 参数</text>
+            <text x="618" y="292">· 层级结构（走了哪条路径）</text>
+          </g>
+          <line x1="618" y1="310" x2="822" y2="310" stroke="var(--line)"/>
+          <text x="618" y="334" font-size="11.5" fill="var(--ink-3)">失败时问：</text>
+          <text x="618" y="356" font-size="11.5" fill="var(--ink-2)">"它走了对的路，</text>
+          <text x="618" y="374" font-size="11.5" fill="var(--ink-2)">还是错的路？"</text>
+          <text x="618" y="398" font-size="11.5" fill="var(--ink-2)">→ 归因到 span 级别</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 24:46 – 25:30 / 36:17 – 39:29</span> 数据取自讲师屏幕实录（GPT 会话，23 tokens、0.9 秒、get_order_status 工具调用）。</figcaption>
+  </figure>
+</section>
+
+<section id="ch-arch">
+  <h2><span class="num">图 05</span>工具栈架构：trace 从哪来，到哪去</h2>
+  <p class="lead">讲师在黑板上画过这张架构（P2 25:53）：Agent 运行时在内存里产生 logs/traces → 缓存几小时就消失 → 必须一次性接入可观测平台 → UI 用于看结果/标注，SDK 用于自动化跑评测。Braintrust 不是运行时，只是"评估与可观测"的落点。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 340" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)"/>
+        </marker>
+      </defs>
+      <g font-family="var(--sans)">
+        <!-- box 1 runtime -->
+        <rect x="40" y="80" width="180" height="120" rx="12" fill="var(--paper-2)" stroke="var(--ink-2)" stroke-width="1.8"/>
+        <text x="130" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">Agent 运行时</text>
+        <text x="130" y="128" text-anchor="middle" font-size="11" fill="var(--ink-3)">你的笔记本 / Cursor</text>
+        <text x="130" y="146" text-anchor="middle" font-size="11" fill="var(--ink-3)">Cloud Code / 平台内建</text>
+        <text x="130" y="172" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--accent-2)">agent.py · make agent</text>
+        <!-- box 2 traces -->
+        <rect x="280" y="80" width="170" height="120" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="5 3"/>
+        <text x="365" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">运行时内存</text>
+        <text x="365" y="126" text-anchor="middle" font-size="11" fill="var(--ink-2)">logs / traces</text>
+        <text x="365" y="148" text-anchor="middle" font-size="10.5" fill="var(--accent)">只活几小时就消失</text>
+        <text x="365" y="170" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">→ 必须落盘</text>
+        <!-- box 3 platform -->
+        <rect x="510" y="60" width="200" height="160" rx="12" fill="var(--paper-2)" stroke="var(--accent-2)" stroke-width="2"/>
+        <text x="610" y="88" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">可观测 / Eval 平台</text>
+        <text x="610" y="110" text-anchor="middle" font-size="11" fill="var(--ink-2)">Braintrust · LangSmith</text>
+        <text x="610" y="128" text-anchor="middle" font-size="11" fill="var(--ink-2)">CrewAI · Agentforce</text>
+        <text x="610" y="152" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">API key (SK_…) + .env</text>
+        <text x="610" y="172" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">一次性埋点</text>
+        <text x="610" y="200" text-anchor="middle" font-size="10.5" fill="var(--accent-3)">projects = 团队/权限治理</text>
+        <!-- box 4a UI -->
+        <rect x="770" y="60" width="80" height="70" rx="10" fill="var(--card)" stroke="var(--line)"/>
+        <text x="810" y="88" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">UI</text>
+        <text x="810" y="106" text-anchor="middle" font-size="10" fill="var(--ink-3)">看结果</text>
+        <text x="810" y="120" text-anchor="middle" font-size="10" fill="var(--ink-3)">标注/单测</text>
+        <!-- box 4b SDK -->
+        <rect x="770" y="150" width="80" height="70" rx="10" fill="var(--card)" stroke="var(--line)"/>
+        <text x="810" y="178" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">SDK</text>
+        <text x="810" y="196" text-anchor="middle" font-size="10" fill="var(--ink-3)">自动化跑</text>
+        <text x="810" y="210" text-anchor="middle" font-size="10" fill="var(--ink-3)">eval 集</text>
+        <!-- arrows -->
+        <g stroke="var(--ink-2)" stroke-width="1.8" fill="none" marker-end="url(#ar2)">
+          <line x1="220" y1="140" x2="276" y2="140"/>
+          <line x1="450" y1="140" x2="506" y2="140"/>
+          <line x1="710" y1="110" x2="766" y2="95"/>
+          <line x1="710" y1="170" x2="766" y2="185"/>
+        </g>
+        <text x="230" y="128" font-size="10" font-family="var(--mono)" fill="var(--ink-3)">runtime</text>
+        <text x="458" y="128" font-size="10" font-family="var(--mono)" fill="var(--ink-3)">export</text>
+        <!-- bottom notes -->
+        <text x="40" y="270" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">instru(mentation) 是一次性工作：接线完成，traces 自动流入。</text>
+        <text x="40" y="292" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">braintrust eval / langsmith evaluate ← 批量跑评测的入口。</text>
+        <text x="40" y="314" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">LLM 成本自付：企业批量买 credits，或本地小模型（慢：20 条要 10–20 分钟）。</text>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 25:53 – 29:59 / 34:53 – 35:58</span> "Braintrust is not your LLM runtime platform"——平台只负责评估与观测，不负责跑 Agent。</figcaption>
+  </figure>
+</section>
+
+<section id="ch-ladder">
+  <h2><span class="num">图 06</span>评估成熟度阶梯：从 playground 到 Ship Gate</h2>
+  <p class="lead">P2 里讲师横跨四个产品演示了同一条成长路径。每一级对应不同的工程纪律：随手单测 → 回归批量实验 → CI/CD 与夜间批跑 → 发布门禁。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 330" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- steps -->
+        <g>
+          <rect x="40" y="210" width="180" height="76" rx="10" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="130" y="238" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">1 · Playground</text>
+          <text x="130" y="257" text-anchor="middle" font-size="11" fill="var(--ink-3)">单条 ad hoc 试跑</text>
+          <text x="130" y="273" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">可 A/B 3 个模型</text>
+        </g>
+        <g>
+          <rect x="245" y="160" width="180" height="126" rx="10" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="335" y="188" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">2 · Batch 实验</text>
+          <text x="335" y="207" text-anchor="middle" font-size="11" fill="var(--ink-3)">数据集 × 评委 批量跑</text>
+          <text x="335" y="223" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">test rubric = 对象+数据+指标</text>
+          <text x="335" y="239" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">结果表 + 对比</text>
+        </g>
+        <g>
+          <rect x="450" y="110" width="180" height="176" rx="10" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="540" y="138" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">3 · CI/CD 自动化</text>
+          <text x="540" y="157" text-anchor="middle" font-size="11" fill="var(--ink-3)">代码一改就触发回归</text>
+          <text x="540" y="173" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">或凌晨 12–3 点批跑</text>
+          <text x="540" y="189" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">资源空闲、跑得更快</text>
+          <text x="540" y="205" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">早上直接看结果</text>
+        </g>
+        <g>
+          <rect x="655" y="60" width="185" height="226" rx="10" fill="color-mix(in srgb, var(--accent) 8%, var(--card))" stroke="var(--accent)" stroke-width="2"/>
+          <text x="747" y="88" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">4 · Ship Gate</text>
+          <text x="747" y="107" text-anchor="middle" font-size="11" fill="var(--ink-2)">"发不发版"变成一次判定</text>
+          <text x="747" y="123" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">阈值 × 评委评分</text>
+          <text x="747" y="139" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">最终回到你的 taste</text>
+          <text x="747" y="155" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">"is it meeting my</text>
+          <text x="747" y="171" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)">threshold criteria"</text>
+        </g>
+        <!-- stairs baseline -->
+        <g stroke="var(--line)" stroke-width="1.6">
+          <line x1="40" y1="286" x2="840" y2="286"/>
+        </g>
+        <!-- arrows up -->
+        <g stroke="var(--ink-3)" stroke-width="1.6" fill="none">
+          <path d="M228 250 L240 250"/>
+          <path d="M433 200 L446 200"/>
+          <path d="M638 150 L650 150"/>
+        </g>
+        <text x="40" y="316" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">"Playground is ad hoc, one of the time. Experiment = batch testing and automated testing." (P2 58:13)</text>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 49:01 – 52:30 / 53:36 – 58:13</span> 阶梯的每一级都来自讲师在 Agentforce 与 Braintrust 里的现场演示。</figcaption>
+  </figure>
+</section>
+
+<section id="ch-grader">
+  <h2><span class="num">图 07</span>Grader 光谱：从正则到 LLM Judge</h2>
+  <p class="lead">Week 1 的 grader 是代码（正则匹配），Week 2 换成 LLM Judge——但不是"用 LLM 取代一切"，而是随判据的语义复杂度做梯度选择。讲师明确说：<i>"the idea is high level code base graders and more model base grader"</i>。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 300" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- spectrum bar -->
+        <defs>
+          <linearGradient id="spec" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="var(--accent-2)"/>
+            <stop offset="0.5" stop-color="var(--accent-4)"/>
+            <stop offset="1" stop-color="var(--accent-3)"/>
+          </linearGradient>
+        </defs>
+        <rect x="60" y="90" width="760" height="14" rx="7" fill="url(#spec)" opacity=".85"/>
+        <!-- ticks -->
+        <g stroke="var(--ink-2)" stroke-width="1.6">
+          <line x1="150" y1="80" x2="150" y2="114"/>
+          <line x1="380" y1="80" x2="380" y2="114"/>
+          <line x1="610" y1="80" x2="610" y2="114"/>
+          <line x1="790" y1="80" x2="790" y2="114"/>
+        </g>
+        <g font-size="12.5" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="150" y="70">代码 Grader</text>
+          <text x="380" y="70">结构化规则</text>
+          <text x="610" y="70">LLM Judge</text>
+          <text x="790" y="70">人工标注</text>
+        </g>
+        <g font-size="10.5" font-family="var(--mono)" fill="var(--ink-3)" text-anchor="middle">
+          <text x="150" y="134">regex / 断言 / 精确匹配</text>
+          <text x="150" y="148">"ask for order ID" 类判定</text>
+          <text x="380" y="134">JSON schema / 字段校验</text>
+          <text x="380" y="148">部分确定性 + 部分语义</text>
+          <text x="610" y="134">rubric 评分 / 对齐偏好</text>
+          <text x="610" y="148">非确定性、需要校准</text>
+          <text x="790" y="134">黄金标准</text>
+          <text x="790" y="148">贵、慢、不可规模复制</text>
+        </g>
+        <!-- week badges -->
+        <g>
+          <rect x="100" y="176" width="110" height="28" rx="14" fill="color-mix(in srgb, var(--accent-2) 12%, var(--card))" stroke="var(--accent-2)"/>
+          <text x="155" y="195" text-anchor="middle" font-size="11" font-weight="700" fill="var(--accent-2)">← Week 1 在这里</text>
+          <rect x="560" y="176" width="110" height="28" rx="14" fill="color-mix(in srgb, var(--accent-3) 12%, var(--card))" stroke="var(--accent-3)"/>
+          <text x="615" y="195" text-anchor="middle" font-size="11" font-weight="700" fill="var(--accent-3)">Week 2 移到这 →</text>
+        </g>
+        <g font-size="12" fill="var(--ink-2)">
+          <text x="60" y="240">"Week one we don't have the LLM, so this is the code base grader… 一旦进入真正的推理与判断，那个问题就会消失。"</text>
+          <text x="60" y="262" font-family="var(--mono)" font-size="11" fill="var(--ink-3)">— P2 67:56 – 68:33</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 67:56 – 68:33</span> 讲师对 Week 1 作业里"判定太僵硬"的解释：正则 grader 只是脚手架，Week 2 的 LLM Judge 才是目标形态。</figcaption>
+  </figure>
+</section>
+
+<section id="ch-multiturn">
+  <h2><span class="num">图 08</span>多轮评估：两个层级都要判</h2>
+  <p class="lead">学员 Uma 问"一次输入带四个问题该怎么判"，讲师答：<i>"You need to do both — each turn level and the final pass and fail, because the final pass/fail is: did the user's issue get solved?"</i>（P2 17:52）。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 300" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- turns -->
+        <g>
+          <rect x="50" y="52" width="150" height="52" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="125" y="74" text-anchor="middle" font-size="12" fill="var(--ink-2)">Turn 1 提问</text>
+          <text x="125" y="92" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--accent-2)">✓ pass</text>
+          <rect x="230" y="52" width="150" height="52" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="305" y="74" text-anchor="middle" font-size="12" fill="var(--ink-2)">Turn 2 追问</text>
+          <text x="305" y="92" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--accent-2)">✓ pass</text>
+          <rect x="410" y="52" width="150" height="52" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="485" y="74" text-anchor="middle" font-size="12" fill="var(--ink-2)">Turn 3 关键更正</text>
+          <text x="485" y="92" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--accent)">✗ fail</text>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="1.6" fill="none">
+          <path d="M200 78 L226 78"/><path d="M380 78 L406 78"/>
+        </g>
+        <!-- conversation level -->
+        <g>
+          <rect x="610" y="40" width="220" height="76" rx="11" fill="color-mix(in srgb, var(--accent) 7%, var(--card))" stroke="var(--accent)" stroke-width="2"/>
+          <text x="720" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">会话级判定</text>
+          <text x="720" y="86" text-anchor="middle" font-size="11" fill="var(--ink-2)">"用户的问题解决了吗？"</text>
+          <text x="720" y="104" text-anchor="middle" font-size="10.5" font-family="var(--mono)" fill="var(--accent)">✗ 最终 fail</text>
+        </g>
+        <path d="M562 78 L606 78" stroke="var(--ink-2)" stroke-width="1.6" fill="none"/>
+        <!-- explanation blocks -->
+        <g font-size="12" fill="var(--ink-2)">
+          <rect x="50" y="150" width="360" height="110" rx="9" fill="var(--card)" stroke="var(--line)"/>
+          <text x="68" y="176" font-weight="700" fill="var(--ink)">逐轮评估（turn-level）</text>
+          <text x="68" y="198" font-size="11.5">每一轮的回答质量单独判。</text>
+          <text x="68" y="218" font-size="11.5">用于定位"是哪一步开始跑偏"。</text>
+          <text x="68" y="240" font-size="11" font-family="var(--mono)" fill="var(--ink-3)">→ 对应 span 级归因</text>
+          <rect x="440" y="150" width="390" height="110" rx="9" fill="var(--card)" stroke="var(--line)"/>
+          <text x="458" y="176" font-weight="700" fill="var(--ink)">会话评估（conversation-level）</text>
+          <text x="458" y="198" font-size="11.5">最终用户意图是否达成（issue solved）。</text>
+          <text x="458" y="218" font-size="11.5">这是"能不能过"的业务判定。</text>
+          <text x="458" y="240" font-size="11" font-family="var(--mono)" fill="var(--ink-3)">→ 对应产品价值</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P2 · 17:52 – 18:15 / 44:56 – 45:35</span></figcaption>
+  </figure>
+</section>
+
+<section id="ch-team">
+  <h2><span class="num">图 09</span>Evals 团队长什么样（原片视频截图重绘）</h2>
+  <p class="lead">P1 开场视频里出现过一张 20+ 人的组织图（Google Doc 截图，原片 10:45），配文是"为每个 GenAI 功能做测试与评估 / 对质量给出诚实估计"。它回答了一个很现实的问题：<b>评估不是一个工具，是一个跨职能建制</b>。</p>
+
+  <figure style="margin:32px 0">
+    <svg viewBox="0 0 880 290" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <text x="50" y="44" font-size="13" font-weight="700" fill="var(--ink)">AI Evals 团队（原片"Evals Team"组织图的角色重绘）</text>
+        <!-- roles -->
+        <g font-size="11.5" text-anchor="middle">
+          <rect x="60" y="66" width="120" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="120" y="85" font-weight="700" fill="var(--ink)">PM</text><text x="120" y="102" font-size="10" fill="var(--ink-3)">定义质量与优先级</text>
+          <rect x="200" y="66" width="120" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="260" y="85" font-weight="700" fill="var(--ink)">QA</text><text x="260" y="102" font-size="10" fill="var(--ink-3)">测试用例与回归</text>
+          <rect x="340" y="66" width="120" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="400" y="85" font-weight="700" fill="var(--ink)">数据科学家</text><text x="400" y="102" font-size="10" fill="var(--ink-3)">指标设计与统计</text>
+          <rect x="480" y="66" width="120" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="540" y="85" font-weight="700" fill="var(--ink)">标注员</text><text x="540" y="102" font-size="10" fill="var(--ink-3)">人工判金标准</text>
+          <rect x="620" y="66" width="120" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="680" y="85" font-weight="700" fill="var(--ink)">工程师</text><text x="680" y="102" font-size="10" fill="var(--ink-3)">埋点/自动化</text>
+          <rect x="760" y="66" width="80" height="46" rx="9" fill="var(--paper-2)" stroke="var(--accent-2)"/><text x="800" y="85" font-weight="700" fill="var(--ink)">…20+</text><text x="800" y="102" font-size="10" fill="var(--ink-3)">人</text>
+        </g>
+        <!-- internal product -->
+        <g>
+          <rect x="60" y="150" width="780" height="60" rx="10" fill="color-mix(in srgb, var(--accent-2) 7%, var(--card))" stroke="var(--accent-2)" stroke-dasharray="5 3"/>
+          <text x="80" y="176" font-size="12.5" font-weight="700" fill="var(--ink)">内部产品：为每一个 GenAI 功能做测试与评估</text>
+          <text x="80" y="196" font-size="11.5" fill="var(--ink-2)">"Test &amp; eval every single GenAI feature · Very honest estimates of quality · Scalar / manual / quantitative"</text>
+        </g>
+        <g stroke="var(--line)" stroke-width="1.4">
+          <line x1="120" y1="112" x2="120" y2="150"/><line x1="260" y1="112" x2="260" y2="150"/><line x1="400" y1="112" x2="400" y2="150"/><line x1="540" y1="112" x2="540" y2="150"/><line x1="680" y1="112" x2="680" y2="150"/><line x1="800" y1="112" x2="800" y2="150"/>
+        </g>
+        <text x="60" y="248" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">启示：评估天然是"产品+工程+数据"的联合作业——这也解释了为什么课程覆盖 PM 与工程师两类听众。</text>
+        <text x="60" y="270" font-size="11.5" font-family="var(--mono)" fill="var(--ink-3)">原片角色名为示意重绘（原截图分辨率不足以辨认全部人名）。</text>
+      </g>
+    </svg>
+    <figcaption><span class="tag-time">P1 · 10:45</span> 视频《The Unexpected Journey of AI Deployments》内嵌的 Google Doc 组织图，按原版式重绘。</figcaption>
+  </figure>
+</section>

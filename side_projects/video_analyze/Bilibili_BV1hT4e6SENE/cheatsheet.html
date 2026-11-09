@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>速查手册 · AI Evals 课程精华</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="progress" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:99;transition:width .1s"></div>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">EV</span><b>AI Evals 实战精华</b></a>
+  <span class="spacer"></span>
+  <button class="iconbtn" id="searchBtn" title="搜索 (Ctrl+K)">⌕</button>
+  <button class="iconbtn" id="themeBtn" title="切换明暗主题">◐</button>
+  <button class="iconbtn" id="navBtn" title="目录" style="display:none">☰</button>
+</header>
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <p class="kicker">课程地图</p>
+    <a href="index.html"><span class="no">00</span>总览 · 课程地图</a>
+    <a href="01-opening.html"><span class="no">01</span>开场：这门课为什么值得学</a>
+    <a href="02-why-tests-fail.html"><span class="no">02</span>为什么单元测试不够用</a>
+    <a href="03-week1-error-analysis.html"><span class="no">03</span>Week 1 实战：Trace → 标注 → 错误分组</a>
+    <a href="04-trace-multiturn.html"><span class="no">04</span>读 Trace 与多轮评估</a>
+    <a href="05-tooling.html"><span class="no">05</span>工具全景：平台选型与工作流</a>
+    <a href="06-llm-judge.html"><span class="no">06</span>通往 LLM Judge</a>
+    <a href="charts.html"><span class="no">07</span>图表库（重建）</a>
+    <a href="cheatsheet.html" class="active"><span class="no">08</span>速查手册</a>
+  </nav>
+  <main class="main">
+    <div class="content">
+<section id="intro" class="hero" style="padding-bottom:0">
+  <p class="kicker">Chapter 08 · Cheatsheet</p>
+  <h1 style="font-size:40px">速查手册</h1>
+  <p class="sub">把所有可执行的东西压缩成一页纸：流程清单、判定原则、术语表、金句墙，以及一张"哪里值得看"的时间轴。建议打印。</p>
+</section>
+
+<section id="timeline">
+  <h2><span class="num">T</span>两分P的内容密度时间轴</h2>
+  <p class="lead">为什么值得先看这张图：4h14m 里真正的高密度内容不到 1/4，其余是直播课的学员环节。按颜色定位，省下三小时。</p>
+  <figure style="margin:26px 0">
+    <svg viewBox="0 0 880 380" style="width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px">
+      <g font-family="var(--sans)">
+        <!-- legend -->
+        <g font-size="11.5">
+          <rect x="560" y="24" width="14" height="14" rx="3" fill="var(--accent)" opacity=".9"/><text x="580" y="36" fill="var(--ink-2)">教学 / 高密度</text>
+          <rect x="676" y="24" width="14" height="14" rx="3" fill="var(--accent-2)" opacity=".55"/><text x="696" y="36" fill="var(--ink-2)">答疑 / 中密度</text>
+          <rect x="790" y="24" width="14" height="14" rx="3" fill="var(--paper-2)" stroke="var(--line)"/><text x="810" y="36" fill="var(--ink-3)">学员轮</text>
+        </g>
+
+        <!-- P1 bar -->
+        <text x="40" y="86" font-size="13" font-weight="700" fill="var(--ink)">P1 · Session 1（182 分钟）</text>
+        <g>
+          <rect x="40" y="96" width="37" height="30" rx="4" fill="var(--accent)" opacity=".9"/><text x="58" y="146" font-size="10" text-anchor="middle" fill="var(--ink-3)">开场</text>
+          <rect x="77" y="96" width="172" height="30" rx="4" fill="var(--accent)" opacity=".9"/>
+          <text x="163" y="143" font-size="10" text-anchor="middle" fill="var(--ink-3)">教学视频 19min</text>
+          <rect x="249" y="96" width="485" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/>
+          <text x="491" y="116" font-size="10.5" text-anchor="middle" fill="var(--ink-3)">60+ 位学员自我介绍（三问轮）</text>
+          <rect x="734" y="96" width="24" height="30" rx="4" fill="var(--accent-2)" opacity=".55"/>
+          <text x="746" y="143" font-size="10" text-anchor="middle" fill="var(--ink-3)">作业说明</text>
+          <rect x="758" y="96" width="63" height="30" rx="4" fill="var(--accent)" opacity=".9"/>
+          <text x="789" y="143" font-size="10" text-anchor="middle" fill="var(--ink-3)">Unit 1 讲授 24min</text>
+        </g>
+        <g font-size="9.5" font-family="var(--mono)" fill="var(--ink-3)">
+          <text x="40" y="163">0:00</text><text x="96" y="163">4:23</text><text x="238" y="163">19:32</text><text x="538" y="163">96:24</text><text x="724" y="163">158:32</text><text x="800" y="163">182:19</text>
+        </g>
+
+        <!-- P2 bar -->
+        <text x="40" y="206" font-size="13" font-weight="700" fill="var(--ink)">P2 · Week 1 Office Hours（72 分钟）</text>
+        <g>
+          <rect x="40" y="216" width="30" height="30" rx="4" fill="var(--accent-2)" opacity=".55"/><text x="55" y="266" font-size="10" text-anchor="middle" fill="var(--ink-3)">起居</text>
+          <rect x="70" y="216" width="156" height="30" rx="4" fill="var(--accent-2)" opacity=".55"/>
+          <text x="148" y="263" font-size="10" text-anchor="middle" fill="var(--ink-3)">作业判定答疑 13min</text>
+          <rect x="226" y="216" width="36" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="244" y="266" font-size="10" text-anchor="middle" fill="var(--ink-3)">环境</text>
+          <rect x="262" y="216" width="72" height="30" rx="4" fill="var(--accent)" opacity=".9"/>
+          <text x="298" y="263" font-size="10" text-anchor="middle" fill="var(--ink-3)">架构图</text>
+          <rect x="334" y="216" width="40" height="30" rx="4" fill="var(--paper-2)" stroke="var(--line)"/><text x="354" y="266" font-size="10" text-anchor="middle" fill="var(--ink-3)">平台</text>
+          <rect x="374" y="216" width="42" height="30" rx="4" fill="var(--accent)" opacity=".9"/>
+          <text x="395" y="263" font-size="10" text-anchor="middle" fill="var(--ink-3)">trace</text>
+          <rect x="416" y="216" width="192" height="30" rx="4" fill="var(--accent-2)" opacity=".55"/>
+          <text x="512" y="263" font-size="10" text-anchor="middle" fill="var(--ink-3)">Agentforce 演示 + 多轮答疑 27min</text>
+          <rect x="608" y="216" width="74" height="30" rx="4" fill="var(--accent)" opacity=".9"/>
+          <text x="645" y="263" font-size="10" text-anchor="middle" fill="var(--ink-3)">收尾 6min</text>
+        </g>
+        <g font-size="9.5" font-family="var(--mono)" fill="var(--ink-3)">
+          <text x="40" y="283">0:00</text><text x="66" y="283">5:00</text><text x="220" y="283">18:00</text><text x="258" y="283">21:35</text><text x="330" y="283">33:00</text><text x="372" y="283">36:00</text><text x="412" y="283">40:00</text><text x="602" y="283">66:00</text><text x="676" y="283">72:00</text>
+        </g>
+
+        <!-- notes -->
+        <g font-size="11.5" fill="var(--ink-2)">
+          <text x="40" y="330">· 必看：P1 04:23–19:32（A/B 失效教学视频）、P1 158:32–182:19（Unit 1 讲授）、P2 21:35–33:00（架构图）、</text>
+          <text x="58" y="350">P2 36:00–40:00（trace 拆解）、P2 05:00–18:00（判定答疑）——合计约 60 分钟覆盖全部干货。</text>
+          <text x="40" y="372" font-family="var(--mono)" font-size="10.5" fill="var(--ink-3)">时间轴依据逐帧分析 + 语音转写重建；学员环节内可能夹杂短问答，已在各章正文中收录。</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>读法：把两段录屏按"信息密度"着色。灰色区域是学员自我介绍轮，可以 2 倍速或跳过。</figcaption>
+  </figure>
+</section>
+
+<section id="checklists">
+  <h2><span class="num">C</span>三张清单</h2>
+  <div class="grid c2">
+    <div class="card">
+      <h3 style="margin-top:0;font-size:17px;color:var(--accent)">① Trace 标注流程</h3>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.9">
+        <li>先读 chat transcript（人话）</li>
+        <li>下钻 root span → LLM span → tool calls</li>
+        <li>对照业务工作流判 pass / fail，并写理由</li>
+        <li>给失败归类（refund / warranty / context / tool…）</li>
+        <li>标注失败层级：模型 / 工具 / 会话 / harness</li>
+        <li>多轮对话：每轮独立一行 + 会话 ID</li>
+        <li>统计问题分布 → 决定下一步修什么</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:17px;color:var(--accent-2)">② Span 检查六项</h3>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.9">
+        <li>input / output 全文</li>
+        <li>tokens 数（过少=提示词没进来）</li>
+        <li>总耗时 latency</li>
+        <li>首 token 时间（体感延迟）</li>
+        <li>cost</li>
+        <li>tool 调用链与参数（走了哪条路径）</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:17px;color:var(--accent-3)">③ Ship Gate 三要素</h3>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.9">
+        <li>分层的数据集（真实 + 合成 + 红队）</li>
+        <li>与人工标注对齐过的评委</li>
+        <li>阈值 + 关键场景红线（安全零容忍）</li>
+      </ol>
+      <p class="muted" style="font-size:13px;margin:10px 0 0">配套：实验跑进 CI/CD；夜间批跑；代码 grader 与 LLM Judge 混合。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:17px;color:var(--ink-2)">④ 判定三原则</h3>
+      <ul style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.9">
+        <li>站在业务工作流上判（先认证后动数据）</li>
+        <li>允许标注者差异，但必须写清理由</li>
+        <li>本阶段目标是"可讨论的一致"，不是绝对正确</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="glossary">
+  <h2><span class="num">G</span>术语与映射（精简版）</h2>
+  <table>
+    <tr><th>概念</th><th>一句话定义</th><th>别名（其他平台）</th></tr>
+    <tr><td>Dataset</td><td>带期望行为的输入集合，可版本化</td><td>test set / scenario set</td></tr>
+    <tr><td>Scorer</td><td>输出 → 分数 / pass-fail 的函数</td><td>metric / evaluator / grader</td></tr>
+    <tr><td>Experiment</td><td>数据集 × 评委 × 被测对象的一次执行</td><td>batch test / regression run</td></tr>
+    <tr><td>Playground</td><td>单条输入的人机对练台</td><td>prompt IDE</td></tr>
+    <tr><td>Trace / Span</td><td>一次完整执行及其子步骤的记录</td><td>log / run / observation</td></tr>
+    <tr><td>Harness</td><td>驱动被测对象的脚手架环境</td><td>test harness / eval harness</td></tr>
+    <tr><td>LLM-as-judge</td><td>用模型按 rubric 评分</td><td>model-based grader</td></tr>
+    <tr><td>Ship gate</td><td>用评估结果做发布判定</td><td>release criteria / quality gate</td></tr>
+  </table>
+</section>
+
+<section id="quotes">
+  <h2><span class="num">Q</span>金句墙</h2>
+  <div class="grid c2">
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"The muscle we are building is the ability to look at a trace, see what's wrong, annotate it, and group your observations."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P2 13:26</span></p></div>
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"No matter how these logs are showing up, the need to understand the fundamentals will never go away."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P2 34:12</span></p></div>
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"80% of it is the same concept… don't get confused by metrics and scores."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P2 58:25</span></p></div>
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"If AI says pass, but we as humans — what we are looking for — that's not aligned, then it doesn't matter."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P2 71:09</span></p></div>
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"We really do our best to send [recordings] while people are building. Time for the actual session is four hours — those might not make it into the recording."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P1 160:51（关于 hands-on 的问答）</span></p></div>
+    <div class="card"><p class="bigquote" style="margin:0;font-size:16.5px">"A/B testing is not going to work — LLM apps are SaaS-like, non-deterministic, high variance."</p><p class="muted" style="font-size:12px;margin:8px 0 0"><span class="tag-src">P1 15:45（视频板书）</span></p></div>
+  </div>
+</section><nav class="pager"><a href="charts.html"><div class="lbl">← 上一章</div><div class="ttl">图表库（重建）</div></a><span style="flex:1"></span></nav>
+    </div>
+    <footer>依据 Bilibili《AI 评估体系实战：面向工程师与产品经理》两分P 全程整理 · 图表与引述均标注视频时间戳 · <a href="index.html" style="color:inherit">返回总览</a></footer>
+  </main>
+</div>
+<div class="searchbox" id="searchbox">
+  <div class="searchpanel">
+    <input type="text" placeholder="搜索全文：概念 / 指标 / 工具 / 时间戳…（Ctrl+K）">
+    <div class="results"></div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox"><img alt="放大查看"></div>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

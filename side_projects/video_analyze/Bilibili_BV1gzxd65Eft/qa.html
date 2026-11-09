@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>E. 短问答 P37–P46 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html" class="active"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">E · 短问答 P37–P46</span>
+<section class="hero">
+<h1>10 个高频问题</h1>
+<p class="lede">每讲 2–4 分钟，一句话回答 + 少量证据。适合在读完 A–D 之后当"结论卡片"复盘：Harness 是什么、为什么同一模型换工具就变笨、开源生态策略、与 Claude Code 的商业逻辑差异、模型水电煤化与新二八原则。</p>
+<div class="meta-chips">
+<span class="chip"><b>10</b> 问</span>
+<span class="chip"><b>~28</b> 分钟</span>
+<span class="chip"><b>1</b> 张对比表</span>
+<span class="chip"><b>2</b> 个金句</span>
+</div>
+</section>
+
+<div class="searchbar">
+<input id="search" placeholder="在本页搜索问题或关键词…">
+<span class="hint">ESC 清空</span>
+</div>
+<div class="no-result">没有匹配的问题</div>
+
+<article class="lecture" id="P37">
+<div class="lecture-head">
+<span class="num">P37</span>
+<h2>Harness 是什么？</h2>
+<span class="dur">2m06</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> Harness 是模型之外那一整套工程系统——<b>模型负责判断，它负责其余一切</b>。</div>
+</div>
+</article>
+
+<article class="lecture" id="P38">
+<div class="lecture-head">
+<span class="num">P38</span>
+<h2>为什么同一个模型在 A 工具好用、在 B 工具就变笨？</h2>
+<span class="dur">2m17</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 因为你面对的不是裸模型，而是"模型 + Harness"；<b>模型只保下限，Harness 决定上限</b>。</div>
+</div>
+</article>
+
+<article class="lecture" id="P39">
+<div class="lecture-head">
+<span class="num">P39</span>
+<h2>DeepSeek Harness 是模型还是客户端？</h2>
+<span class="dur">3m58</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 两者都不是——它是<b>一套用来构建、运行、扩展 Agent 的开源框架</b>。</div>
+</div>
+</article>
+
+<article class="lecture" id="P40">
+<div class="lecture-head">
+<span class="num">P40</span>
+<h2>核心设计哲学是什么？Cordis 是什么？</h2>
+<span class="dur">2m26</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 哲学就五个字"<b>一切皆插件</b>"；Cordis 是<b>只做装载、不承载能力</b>的分层内核，于是系统里没有一个写死的内核。</div>
+</div>
+</article>
+
+<article class="lecture" id="P41">
+<div class="lecture-head">
+<span class="num">P41</span>
+<h2>四种开箱即用模式各自用途？</h2>
+<span class="dur">3m57</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 标准 / PTC / 极简 / 创造四种 Agent 预设，<b>差别不在"能力多少"，而在这一会话要装哪套插件、朝哪个方向偏</b>。</div>
+<table>
+<tr><th>预设</th><th>定位</th><th>典型用途</th></tr>
+<tr><td>标准</td><td>功能完整的编码 Agent</td><td>日常开发</td></tr>
+<tr><td>PTC</td><td>标准 + Code Mode SDK</td><td>需求模糊的长任务，用 TS 程序组合多步操作</td></tr>
+<tr><td>极简</td><td>仅 bash + str_replace_editor</td><td>基准测试 / 压测</td></tr>
+<tr><td>创造</td><td>标准 + 运行时检查 + 插件实验</td><td>做自己的 preset</td></tr>
+</table>
+</div>
+</article>
+
+<article class="lecture" id="P42">
+<div class="lecture-head">
+<span class="num">P42</span>
+<h2>DeepSeek Harness 的透明体现在哪里？</h2>
+<span class="dur">2m12</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 模型"能看到的一切"——系统提示词、思维链路、每次工具调用、每次上下文注入——全部写进一份<b>只增不改的会话日志</b>，于是整条执行轨迹逐条可查、可恢复、可分叉。</div>
+<ul class="points">
+<li>透明 = <b>全量留痕 + 只追加</b>，不是给结果摘要：每一步的输入（上下文注入）与动作（工具调用）都落盘，事后不改写。</li>
+<li>现场演示：提问"帮我写一个贪吃蛇"，先 think、再深度搜索，思考全过程直接摊开给用户看。</li>
+<li>思考里在做方案抉择：桌面版 / Python 命令行版 / HTML 版三条路，最终选 HTML 版（最快），生成单文件代码；完成后自报"已创建 + 怎么玩 + 怎么部署 + 有哪些功能"。</li>
+<li>日志衍生三种操作：<b>逐条可查</b>、<b>可恢复</b>、<b>可分叉</b>——从某一步另走一条路线（如改走纯 Python 命令行），也可把分支复制出来继续对话。</li>
+<li>定位能力升级：过去只知"结果错了"，现在能指出<b>哪一步、哪个工具、哪段上下文</b>出错。</li>
+<li>三个收益可当工程指标用：可调试性、可复现性、信任度。</li>
+</ul>
+<blockquote class="quote">让这个 Agent 从原来的黑盒子变成了一个玻璃盒子。</blockquote>
+</div>
+</article>
+
+<article class="lecture" id="P43">
+<div class="lecture-head">
+<span class="num">P43</span>
+<h2>DeepSeek 的开源生态策略有什么独特之处？</h2>
+<span class="dur">3m11</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 不是"发布后再慢慢建生态"，而是<b>发布前</b>就把需求（卡脖子）、姿态（主动开源）、门槛（低费用）、社区（提前招募 + 全栈接入只认一个标签）四件事铺完。</div>
+<ul class="points">
+<li><b>卡脖子是需求前提</b>：讲者称 Claude Code 及若干国外工具会针对中国用户、或员工中含中国人的海外公司"卡脖子"（未给具体手段）。</li>
+<li><b>开源姿态</b>：国外模型多不开源，或只是"迫于压力"开放一部分；DeepSeek 是主动开源。</li>
+<li><b>费用</b>：生态费用做得很低，"可以放心大胆、大量地用"。</li>
+<li><b>提前铺社区</b>：25–26 年就开始筹备；还没发海报、没有 demo 时，几天内近千位开发者带项目报名，社区戏称"开源 Agent 的春晚"。</li>
+<li><b>公开招募 + 官方样例</b>：8 月初团队负责人在 GitHub 公开招募内测开发者，只需留 GitHub ID 与代表作；随后放出一批内测插件。</li>
+<li><b>接入面全摊开</b>：Skills、MCP、UI 等全栈"来者不拒"；仓库打上 <b>DSH</b> 标签即可运行、并被生态发现。</li>
+<li>结果只给定性：GitHub 上"昨天发布的东西"star 涨得"非常恐怖"，<b>未给数字</b>。</li>
+</ul>
+<blockquote class="quote">他不是说在发布之后慢慢建立生态，他是在发布之前就已经把开放社区的生态给铺开了。</blockquote>
+</div>
+</article>
+
+<article class="lecture" id="P44">
+<div class="lecture-head">
+<span class="num">P44</span>
+<h2>和 Claude Code 对比，商业逻辑有什么不同？</h2>
+<span class="dur">2m14</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> Claude Code 证明 Harness 是门<b>年化几十亿美元</b>的产品生意；DeepSeek Harness 证明同一件事可以"光明正大用开源做"——MIT、模型可插拔、免费、靠生态共建增值，核心资产从"产品"换成"生态和框架"。</div>
+<table>
+<tr><th>维度</th><th>Claude Code</th><th>DeepSeek Harness</th></tr>
+<tr><td>源码</td><td>闭源</td><td>MIT 开源</td></tr>
+<tr><td>模型</td><td>锁 Claude</td><td>一切皆插件，可换</td></tr>
+<tr><td>商业模式</td><td>订阅收费</td><td>生态共建 + 能力增值</td></tr>
+<tr><td>核心资产</td><td>产品本身</td><td>生态和框架</td></tr>
+</table>
+<ul class="points">
+<li>幻灯片首行即给量级："ClaudeCode 证明了 Harness 是一门年化几十亿美元的生意"（口播为"一年几十个亿"，未给出处）。</li>
+<li>开源史被点明：Claude Code 当年"出了错误、泄露了一部分源码"，但<b>本质上仍属闭源</b>。</li>
+<li>MIT 被讲成"底座属于所有人"：约束的是 Harness 这层框架，不是模型权重；"模型可以插拔，不锁定任何一家"。</li>
+<li>可插拔是产品级事实：设置里能直接改模型、填自定义接入；默认只在首次安装时推荐 DeepSeek，删掉换别家"没有任何问题"。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P45">
+<div class="lecture-head">
+<span class="num">P45</span>
+<h2>为什么说模型在变成水电煤，Harness 成为新主战场？</h2>
+<span class="dur">1m45</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> 模型（Kimi、智谱、GLM 等）能力与价格双双趋同、退化成水电煤之后，差异化整体上移到模型之外那一层——工具调用、沙箱、记忆、编排、错误恢复、透明性与生态，Harness 于是成了"<b>模型之上的操作系统</b>"。</div>
+</div>
+</article>
+
+<article class="lecture" id="P46">
+<div class="lecture-head">
+<span class="num">P46</span>
+<h2>个人观点：Harness 与新二八原则</h2>
+<span class="dur">3m34</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话回答</b> AI 把 80% 很快做完，剩下的 20% 是"能跑→好用"的落地活、成本指数上升且必须由人做；<b>Harness 的本质就是让这 20% 做得更快、更高效</b>。</div>
+<div class="note chart">
+<h3>新旧二八对照</h3>
+<p><b>旧二八</b>：80% 的时间写代码，20% 的时间调试与维护。</p>
+<p><b>新二八</b>：80% 的代码 AI 很快产出，剩下 20% 是把它落地到"好用"——联调、边界、权限、安全、可观测、生态对接。这 20% 的成本指数上升，且必须由人来做决定。</p>
+</div>
+</div>
+</article>
+
+<h2 id="thread">把 10 个回答串成一条线</h2>
+<div class="timeline">
+<div class="step"><b>定义</b><p>Harness 是模型之外的一整套工程系统（P37、P39）；同一模型表现不同，因为上限由 Harness 决定（P38）。</p></div>
+<div class="step"><b>机制</b><p>一切皆插件 + Cordis 只做装载（P40）；四种预设是四种插件装配（P41）。</p></div>
+<div class="step"><b>价值</b><p>透明日志让执行可查、可恢复、可分叉（P42）；这是"玻璃盒子"的工程价值。</p></div>
+<div class="step"><b>商业</b><p>开源生态提前铺（P43）；与 Claude Code 相比，资产从产品换成生态（P44）。</p></div>
+<div class="step"><b>趋势</b><p>模型水电煤化 → 差异化上移到 Harness（P45）；本质是让落地的那 20% 更快（P46）。</p></div>
+</div>
+
+<hr class="sep">
+<p class="lede">附录：<a href="extras.html">⊕ 术语表 · 数字 · 存疑 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DeepSeek Harness 教程精华 · 总览</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html" class="active"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">总览 · Overview</span>
+<section class="hero">
+<h1>DeepSeek Harness 教程精华</h1>
+<p class="lede">把 B 站「饭饭大王ouo」《DeepSeek Harness 源码精读》46 讲浓缩成可交互的精华手册：一句话主线、核心心智模型、46 讲卡片、图表实证、术语速查与上手路径。</p>
+<div class="meta-chips">
+<span class="chip"><b>46</b> 讲</span>
+<span class="chip"><b>~8h</b> 总时长</span>
+<span class="chip"><b>5</b> 大板块</span>
+<span class="chip"><b>159</b> 插件</span>
+<span class="chip"><b>12</b> 核心心智模型</span>
+</div>
+</section>
+
+<div class="stats">
+<div class="stat"><b>一切皆插件</b><span>159 插件组成 Agent 全部能力</span></div>
+<div class="stat"><b>4 种预设</b><span>标准 / PTC / 极简 / 创造</span></div>
+<div class="stat"><b>6 大核心能力</b><span>Planning·Sandbox·Skills·Context·Multi-Agent·人工介入</span></div>
+<div class="stat"><b>1 条主线</b><span>从跑起来 → 读懂 → 六大能力落地 → 异步补齐</span></div>
+</div>
+
+<h2 id="line">一句话主线</h2>
+<p>从"一条命令跑起来"走到"读懂主循环与事件总线"，再用一个 ERP 采购助手项目把 Harness <b>六大核心能力</b>（Planning / 安全且可动态路由的文件后端 / Multi-Agent / 上下文管理 / Skills 渐进式披露与自我进化 / Human-in-the-Loop）逐一落地——其中 <b>Sandbox 与中间件矩阵</b>是托住全部六项的基础设施，最后以 AsyncSubAgent 补齐"长任务不阻塞"，用 10 个短问答收尾。</p>
+
+<h2 id="map">课程地图</h2>
+<div class="grid c2">
+<a class="card" href="source.html"><span class="tag">A · P01–P10 · 10 讲</span><h3>源码精读：内核</h3><p>插件树、session 四事件、tools 三层拦截、Agent Loop、waterfall 事件总线、MCP 插件四件套。</p><div class="more">进入 A 组 →</div></a>
+<a class="card" href="project.html"><span class="tag">B · P11–P20 · 10 讲</span><h3>项目实战：ERP_OPENCLAW</h3><p>五问分派表 → 项目全景 → 驾驭工程 → write_todos → 文件后端路由 → 多智能体委派。</p><div class="more">进入 B 组 →</div></a>
+<a class="card" href="capabilities.html"><span class="tag">C · P21–P32 · 12 讲</span><h3>六大能力：落地细节</h3><p>两层中断、OpenSandbox 五组件、Skills 自我进化、上下文压缩、用户偏好、9+8 中间件、SSE。</p><div class="more">进入 C 组 →</div></a>
+<a class="card" href="async.html"><span class="tag">D · P33–P36 · 4 讲</span><h3>异步子代理 + 求职</h3><p>AsyncSubAgent 的 4 字段 / 5 工具、Agent Protocol Server、5 秒轮询闭环、Harness 岗位能力清单。</p><div class="more">进入 D 组 →</div></a>
+<a class="card" href="qa.html"><span class="tag">E · P37–P46 · 10 讲</span><h3>短问答：10 个结论</h3><p>Harness 是什么、为什么换工具就变笨、开源生态策略、与 Claude Code 的商业差异、新二八原则。</p><div class="more">进入 E 组 →</div></a>
+<a class="card" href="extras.html"><span class="tag">⊕ 附录</span><h3>术语 · 图表 · 路径</h3><p>40+ 概念速查、技术栈、ASR 校正表、11 张图索引、源码路径与制作方法说明。</p><div class="more">打开附录 →</div></a>
+</div>
+
+<h3>或按分P快速定位</h3>
+<table>
+<tr><th>板块</th><th>分P</th><th>主题</th><th>性质</th></tr>
+<tr><td><a href="source.html">A. 源码精读</a></td><td>P01–P10</td><td>DeepSeek Harness 内核：插件树、会话、Agent Loop、事件总线、MCP</td><td>源码</td></tr>
+<tr><td><a href="project.html">B. 项目实战</a></td><td>P11–P20</td><td>技术选型 + ERP_OPENCLAW 企业级项目：目录、驾驭工程、Planning、文件后端、Multi-Agent</td><td>项目</td></tr>
+<tr><td><a href="capabilities.html">C. 六大能力</a></td><td>P21–P32</td><td>人工介入 / Sandbox / Skills 自我进化 / Context-Engineering / 用户偏好 / 中间件矩阵 / SSE</td><td>项目 + 源码</td></tr>
+<tr><td><a href="async.html">D. AsyncSubAgent</a></td><td>P33–P36</td><td>异步子代理 + Agent Protocol Server + 求职</td><td>项目</td></tr>
+<tr><td><a href="qa.html">E. 短问答集</a></td><td>P37–P46</td><td>10 个高频问题的简短答疑</td><td>答疑</td></tr>
+</table>
+
+<h2 id="models">核心心智模型</h2>
+<div class="grid c3">
+<div class="card"><span class="tag">01</span><h3>一切皆插件</h3><p>模型、工具、Skills、会话、沙箱、存储、循环、调度、UI 本身——所有 Agent 能力都由插件组合而成，可自由替换与灵活重组。</p></div>
+<div class="card"><span class="tag">02</span><h3>Cordis 内核</h3><p>插件运行时由 Cordis 提供：服务注册/注入、事件追加与派发、生命周期钩子，是 Harness 一切机制的底座。</p></div>
+<div class="card"><span class="tag">03</span><h3>Session 四事件</h3><p>会话事件驱动：四个核心事件 + scope 过滤 + 追加后广播，<b>flush ≠ 持久化</b>，落盘归插件。</p></div>
+<div class="card"><span class="tag">04</span><h3>Agent Loop 主循环</h3><p>turn/step 双粒度：入口 → 加载 → 日志/存储 → 输入 → prompt + 工具 → agent-loop → LLM → END，<b>END 是状态值而非独立步骤</b>。</p></div>
+<div class="card"><span class="tag">05</span><h3>tools 三层拦截</h3><p><code>tools/pre-execute</code> / <code>tools/execute</code> / <code>tools/post-execute</code>，三者都是 <code>@mode waterfall</code>：允许/拒绝/询问 → 派发 → accept/replace/enrich/block。</p></div>
+<div class="card"><span class="tag">06</span><h3>LLM 适配层</h3><p><code>LlmAdapter</code> 抽象类 + <code>LlmRuntime.stream</code> 必过 <code>llm/stream</code> waterfall + <code>PreparedLlmCall</code> 深冻结——换模型不改源码的机制。</p></div>
+<div class="card"><span class="tag">07</span><h3>驾驭工程</h3><p>Harness 的核心价值 = 让 AI 工程化：把 Prompt / Tool / Skill / 沙箱 / 记忆 / 中间件编排成稳定可复现的"工程"。</p></div>
+<div class="card"><span class="tag">08</span><h3>Sandbox 五组件</h3><p>SandboxSync → OpenSandboxBackend → SandboxBackendProxy（稳定句柄 + 热替换）→ SandboxManager（生命周期）→ SandboxHealthMiddleware（健康钩子）。</p></div>
+<div class="card"><span class="tag">09</span><h3>Skills 自我进化</h3><p>执行与存储分离（沙箱随时回收，StoreBackend 持久化）；母 Skill <code>skill-management</code> 管全生命周期；渐进式披露节省 token 预算。</p></div>
+<div class="card"><span class="tag">10</span><h3>Context-Engineering 四流程</h3><p>Input / Compression / Isolation / Long-term Memory；三层压缩：85% 阈值自动摘要 + 手动 compact + 子 Agent 隔离。</p></div>
+<div class="card"><span class="tag">11</span><h3>Multi-Agent + AsyncSubAgent</h3><p>子 Agent 委派抽取 5 项 + yaml 弹性加载；异步子代理经 Agent Protocol Server 管理，立即返回 task_id，前端 5 秒轮询。</p></div>
+<div class="card"><span class="tag">12</span><h3>中间件管线</h3><p>9 个中间件形成"健康守护→上下文注入→技能同步→摘要压缩→记忆更新→熔断保护→调用限制"完整生命周期管线，#1 与 #7 协作形成双重保险。</p></div>
+</div>
+
+<h2 id="path">上手路径建议</h2>
+<div class="timeline">
+<div class="step"><b>1. 先跑起来</b><p>按 P01 装 Node + <code>npx @deepseek-ai/dsh web</code>，把 Harness 开起来玩 30 分钟，四种预设都点一遍。</p></div>
+<div class="step"><b>2. 读源码入口</b><p>从 <code>apps/cli/src/bin.ts</code> 进入，按 P03 的插件树三层覆盖路线走通。</p></div>
+<div class="step"><b>3. 精读主循环</b><p>把 P08 主循环 + P06 Agent-Loop + P07 模型适配三讲连着看，理解 turn/step 与 waterfall 事件。</p></div>
+<div class="step"><b>4. 写一个插件</b><p>照 P10 四件套模板 + MCP 三件套配置，动手写一个 200 行的玩具插件。</p></div>
+<div class="step"><b>5. 跟 ERP 项目</b><p>把 P14-P20 的项目目录、Planning、文件后端、Multi-Agent 跑一遍，理解驾驭工程。</p></div>
+<div class="step"><b>6. 深入六大能力</b><p>挑 Sandbox、Skills、Context-Engineering、中间件矩阵四个最硬的深挖，做对照实验。</p></div>
+<div class="step"><b>7. 异步补齐</b><p>P33-P35 的 AsyncSubAgent 是生产部署必备，跑通 thread/run/state 协议。</p></div>
+</div>
+
+<h2 id="note">客观提示</h2>
+<div class="note warn">
+<h3>阅读本报告时的三件事</h3>
+<p>① 课程含营销/就业服务内容（集中在 P12、P13、P36），本报告仅保留客观结构，不评价真伪。</p>
+<p>② 部分专名经 ASR 转写 + OCR 帧实证双重校正；仍有不确定处标注"讲者推断"或"口述"。</p>
+<p>③ 课程项目底层基于 LangChain Deep Agents 构建（P22-P36 多处实证）；"DeepSeek Harness"既是产品名，也是这套项目的工程命名。</p>
+</div>
+
+<hr class="sep">
+<p class="lede">下一步：<a href="source.html">A. 源码精读 P01–P10 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

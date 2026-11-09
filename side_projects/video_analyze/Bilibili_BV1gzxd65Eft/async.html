@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D. 异步子代理 P33–P36 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html" class="active"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">D · AsyncSubAgent P33–P36</span>
+<section class="hero">
+<h1>长任务不阻塞：异步子代理</h1>
+<p class="lede">一个真实体验缺陷——采购分析要 1 分钟、按钮变灰、用户被迫等待——催生了 AsyncSubAgent：把子代理的生命周期从一次请求里剥离出去，用"任务 ID + 服务 + 轮询"三件套换取主 Agent 的持续可用。最后一讲回到求职视角，倒推这条技术路线的能力清单。</p>
+<div class="meta-chips">
+<span class="chip"><b>4</b> 讲</span>
+<span class="chip"><b>~63</b> 分钟</span>
+<span class="chip"><b>4</b> 字段</span>
+<span class="chip"><b>5</b> 工具</span>
+<span class="chip"><b>5s</b> 轮询间隔</span>
+</div>
+</section>
+
+<div class="searchbar">
+<input id="search" placeholder="在本页搜索 P33–P36 任意关键词…">
+<span class="hint">ESC 清空</span>
+</div>
+<div class="no-result">没有匹配的讲次</div>
+
+<article class="lecture" id="P33">
+<div class="lecture-head">
+<span class="num">P33</span>
+<h2>AsyncSubAgent 解析（一）：把"等 1 分钟"变成三条工程约束</h2>
+<span class="dur">22m38</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从一个真实体验缺陷出发，把需求翻译成三条工程约束（后台跑 / 主 Agent 立即恢复 / 可凭 task_id 查询与取结果），并引出 AsyncSubAgent 的概念澄清。</div>
+<ul class="points">
+<li><b>问题域收敛</b>：采购分析要 1 分钟、按钮变灰、用户被迫等待——这是同步子代理的体验缺陷。</li>
+<li><b>AsyncSubAgent 的"异步"与 Python 协程无关</b>，本质是<b>生命周期解耦</b>；同步 <code>subagent</code> 像函数调用（阻塞、返回结果），异步则立即返回 job/task ID。</li>
+<li>主 Agent 以 supervisor 身份继续服务用户，并保留 send/update、cancel、list、跨轮状态、长任务、并行、中途干预等能力。</li>
+<li><b>机制落点</b>：所有能力都收敛到 <b>Agent Protocol Server</b>（= LangGraph 本地服务，<code>langgraph dev --host 127.0.0.1 --port 2024</code>）。</li>
+<li>内部以 <b>thread（会话容器）/ run（一次执行）/ state（当前状态）</b> 三元组管理后台任务，状态机取值 <code>running / success / error / cancelled</code>；主 Agent 通过 5 个工具操纵它。</li>
+</ul>
+<pre class="diagram">同步子代理                         异步子代理（AsyncSubAgent）
+─────────                          ────────────────────────────
+task() ──阻塞 60s──→ 结果           task 启动 ──→ 立即返回 task_id
+用户界面：按钮变灰、无法继续         主 Agent 继续服务用户
+                                    后台 run 跑完 → 轮询取结果</pre>
+</div>
+</article>
+
+<article class="lecture" id="P34">
+<div class="lecture-head">
+<span class="num">P34</span>
+<h2>AsyncSubAgent 解析（二）：改造路径与四个字段、五个工具</h2>
+<span class="dur">20m52</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从代码层面讲解 AsyncSubAgent 的改造路径——服务侧 <code>langgraph.json</code> 用<b>自定义 graph_id</b> 注册异步图；主 Agent 侧用 <code>AsyncSubAgent(name/description/graph_id/url)</code> 声明。</div>
+<ul class="points">
+<li><code>langgraph dev</code> 只需要两个必需文件：<code>langgraph.json</code> + <code>pyproject.toml</code>。</li>
+<li>服务侧：原来主智能体的键<b>写死为 <code>"agent"</code></b>（不可改名）；新增异步条目改成<b>自定义 graph_id</b>（画面可辨 <code>procurement_analyst_async</code>）。</li>
+<li><code>graph_id</code> 是异步子智能体的唯一 ID，<b>必须与主智能体侧完全一致</b>（讲者专门截图对比两处）。</li>
+<li><code>main_agent.py</code> 三处改动：定义同一个 <code>ASYNC_ANALYST_GRAPH_ID</code>、加环境变量 <code>ASYNC_ANALYST_URL</code>（<code>127.0.0.1:2024</code>）、<code>import AsyncSubAgent</code>。</li>
+<li>子智能体拆成<b>两个列表</b>：<code>sync_subagents = resolve_subagent_tools(...)</code>（只留订单管理）+ <code>async_subagents: list[AsyncSubAgent]</code>，最后 <code>subagents = sync_subagents + async_subagents</code>。</li>
+<li>loader 里加<b>排除判断</b>：采购分析的 YAML <b>没删但不读</b>，否则会被同步列表重复加载。</li>
+<li>异步子智能体不能靠 YAML 配置，单独写 <code>async_procurement_analyst.py</code>（核心是一行 <code>create_deep_agent(...)</code>）。</li>
+<li><b>异步条目只有四个字段</b>：<code>name</code>（<code>procurement-analyst</code>）/ <code>description</code>（"耗时采购分析专家……后台运行，适合长任务"）/ <code>graph_id</code> / <code>url</code>。</li>
+<li><b>5 个工具由 <code>AsyncSubAgentMiddleware</code> 提供</b>（配置了 async subagents 就自动进默认中间件栈）。</li>
+<li><code>create_deep_agent</code> <b>只是函数名</b>：产出物是主还是子，由<b>代码位置</b>决定。</li>
+<li>部署拓扑/传输可选：ASGI transport（同进程共部署）或 HTTP transport（远程），拓扑分 Single / Split / Hybrid。</li>
+</ul>
+<table>
+<tr><th>工具</th><th>作用</th></tr>
+<tr><td><code>start_async_task</code></td><td>启动后台任务，立即返回 Task ID</td></tr>
+<tr><td><code>check_async_task</code></td><td>查询状态 + 取结果</td></tr>
+<tr><td><code>update_async_task</code></td><td>发新指令（同一 thread 打断旧 run，task ID 不变）</td></tr>
+<tr><td><code>cancel_async_task</code></td><td>服务端 <code>runs.cancel()</code> 并标记 <code>cancelled</code></td></tr>
+<tr><td><code>list_async_tasks</code></td><td>列出全部任务；非终态并行取实时状态，终态读缓存</td></tr>
+</table>
+<div class="note warn">
+<h3>四个易踩的坑</h3>
+<p>① <code>update</code> 走同一 thread 的 interrupt 策略——旧 run 被打断、带完整历史 + 新指令重启，但 <b>task ID 不变</b>。</p>
+<p>② 任务元数据必须放在 supervisor graph 的<b>专用 state channel <code>async_tasks</code></b>，与 message history 分离——否则消息被压缩后，只存在 tool message 里的 task ID 就丢了。</p>
+<p>③ checkpoint 不指定就落在 <b>in-memory</b>，生产要换 MongoDB 等持久 checkpointer。</p>
+<p>④ 主 Agent 提示词要加路由规则：采购分析 → <code>start_async_task</code>；操作采购单 → <code>task</code>；简单问候 → 直接应答；通用知识 → <code>web_search</code>；新偏好 → 更新偏好文件。</p>
+</div>
+</div>
+</article>
+
+<article class="lecture" id="P35">
+<div class="lecture-head">
+<span class="num">P35</span>
+<h2>AsyncSubAgent 解析（三）：写侧异步 + 读侧轮询的运行闭环</h2>
+<span class="dur">7m29</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 运行闭环——前端 POST → 主 Agent <code>start_async_task</code> → 服务建 thread/run 并立刻返 task_id → SSE 推"任务已启动" → 子 Agent 在全局沙箱里跑 → 前端每 5 秒轮询 → 完成后自动展示结果。</div>
+<ul class="points">
+<li><b>启动编排（现场日志顺序，可直接当部署检查表）</b>：MCP Server → 初始化沙箱 → 通过 Docker 创建容器 → 连接 MCP Server → 加载子智能体 → 启动 Agent 服务 <code>127.0.0.1:2024</code>。</li>
+<li><b>异步回执原文</b>："采购分析任务已经启动……任务编号是 xxx……在后台运行，完成后页面会自动展示结果，<b>您可以继续处理其他事务</b>"。</li>
+<li><b>界面级差别</b>：同步时那个位置是<b>停止按钮</b>、不能再问别的；异步后可以立刻让它"调用技能 / 编写新 Skill / 下载 Skill"。</li>
+<li>查状态与取消都是自然语言：说"后台任务执行情况"→ 自主调 <code>check_async_task</code>；说"强制杀掉"→ 调 <code>cancel_async_task</code>。<b>5 个工具全暴露给主智能体，由模型做意图识别自主选择</b>。</li>
+<li>结果自动落地：完成后页面推送"任务已完成，以下为分析结果"，与同步版结果基本一致，唯一区别是执行者换成了异步子智能体。</li>
+</ul>
+<pre class="diagram">前端 POST /api/chat/stream
+        │
+        ▼
+主 Agent ── start_async_task ──→ Agent Protocol Server(127.0.0.1:2024)
+        │                              │ 建 thread / run
+        │◀────── 立即返回 task_id ──────┘
+        │ SSE: "任务已启动"
+        ▼
+前端每 5s 轮询 /api/async-tasks/{task_id}
+                                       │
+                     子 Agent 在全局 OpenSandbox 内执行
+                                       │
+                        完成后 state 落盘 → 页面自动展示结果</pre>
+<blockquote class="quote">AsyncSubAgent 不是"更快的子代理"，而是把子代理的生命周期从一次请求里剥离出去，用"任务 ID + 服务 + 轮询"三件套换取主 Agent 的持续可用。</blockquote>
+</div>
+</article>
+
+<article class="lecture" id="P36">
+<div class="lecture-head">
+<span class="num">P36</span>
+<h2>AI 大模型如何基于 Harness 去找工作</h2>
+<span class="dur">12m21</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 借 DeepSeek 新开的"Agent Harness 研发工程师"岗位，倒推 Harness 方向的能力清单、技术栈取舍与简历写法（求职建议集）。</div>
+<ul class="points">
+<li><b>岗位信号</b>：讲者称"今年 5 月中旬"DeepSeek 官方开始面向社会+校招发布 <b>Agent Harness 研发工程师</b>；此前主要招算法/模型训练/算子优化方向。</li>
+<li><b>企业侧风向</b>：早期用 Dify 之类搭"内容智能体"，特征是大量系统提示词、只解决单一简单任务、灵活度不够；OpenHands/Codex 这类 Harness 架构走红后，企业定制复杂业务智能体也倾向选 Harness。</li>
+<li><b>可投的岗位名</b>：大模型应用工程师、大模型应用算法工程师、<b>AI Agent 工程师</b>、大模型工程师。</li>
+<li><b>能力主干</b>：上下文工程 + 驾驭工程、Skills（尤其是 <b>Skill 管理</b>）、Sandbox（解决安全）、任务规划。</li>
+<li><b>RAG 定位被下调但要学透</b>：讲的是 <b>Agentic RAG</b>；海量知识库仍必须上企业级向量库（Elasticsearch、PostgreSQL+向量插件、Milvus），配套多路召回、<b>切片优化</b>、<b>两轮以上重排</b>、评估、query 重写。</li>
+<li><b>推理与部署</b>：了解 vLLM / SGLang 推理核心源码；Agent 后端走 <b>FastAPI → ASGI → Docker 多实例 → 反向代理/负载均衡</b>。</li>
+<li><b>模型层基本功</b>：神经网络与 Transformer 全流程、各类微调算法、PyTorch。</li>
+<li><b>框架取舍（讲者明确建议）</b>：<b>LangChain / LangGraph / Deep Agents 为主</b>；<b>LlamaIndex 不建议再花精力</b>（尚未支持 Harness 架构）；时间充裕可看阿里 AgentScope。</li>
+<li><b>Web Coding</b>：Codex / Claude Code 至少会一个；会基于 Hermes/OpenHands 类成熟 Harness 做 <b>Skill 定制与下载</b>。</li>
+<li><b>微调"有概率但要会"</b>：意图识别环节很多公司用 <b>8B 级小模型定制微调</b>，只干单一场景判别（讲者举例字节）。</li>
+<li><b>简历硬门槛</b>：简历里<b>必须有多智能体</b>；RAG 若写上，必须有<b>切片优化 + 多层索引 + 两层以上重排 + 多层评估</b>。</li>
+<li><b>可抄的简历条目模板</b>（讲者正例，恰好就是本项目）：任务规划、虚拟文件系统、子智能体委派、上下文管理、可插拔 Skills 技能系统、全生命周期记忆管理、安全沙箱、链路追踪。</li>
+</ul>
+<blockquote class="quote">简历筛的是架构词汇的证据：多智能体、切片优化、多层重排、沙箱、Skills、记忆管理，少一个就少一轮面试。</blockquote>
+</div>
+</article>
+
+<h2 id="recap">D 组小结：异步化的三件套</h2>
+<div class="flowline">
+<span class="n"><b>① 任务 ID</b> 立即返回</span><span class="ar">→</span>
+<span class="n"><b>② 服务</b> Agent Protocol Server</span><span class="ar">→</span>
+<span class="n"><b>③ 轮询</b> 5s 一次</span>
+</div>
+<table>
+<tr><th>层次</th><th>同步子代理</th><th>异步子代理</th></tr>
+<tr><td>调用语义</td><td>函数调用：阻塞、返回结果</td><td>作业提交：立即返回 task_id</td></tr>
+<tr><td>主 Agent</td><td>被占用</td><td>继续服务（supervisor）</td></tr>
+<tr><td>状态载体</td><td>tool message</td><td>专用 state channel <code>async_tasks</code></td></tr>
+<tr><td>进程边界</td><td>同进程</td><td>另一进程（LangGraph / APS）</td></tr>
+<tr><td>沙箱</td><td>共享</td><td>共享（故需健康检查 + 重建）</td></tr>
+</table>
+
+<hr class="sep">
+<p class="lede">下一组：<a href="qa.html">E. 短问答 P37–P46 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

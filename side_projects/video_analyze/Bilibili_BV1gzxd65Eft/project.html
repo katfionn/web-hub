@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B. 项目实战 P11–P20 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html" class="active"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">B · 项目实战 P11–P20</span>
+<section class="hero">
+<h1>从选型到 ERP_OPENCLAW</h1>
+<p class="lede">先用"五问分派表"决定哪些活交给智能体，再把一个摩托车零部件采购 ERP 的智能采购助手拆开：目录、驾驭工程、Planning、文件后端、Multi-Agent。P12/P13 为课程招生说明会，仅压缩为客观结构。</p>
+<div class="meta-chips">
+<span class="chip"><b>10</b> 讲</span>
+<span class="chip"><b>~136</b> 分钟</span>
+<span class="chip"><b>2</b> 层主从</span>
+<span class="chip"><b>3</b> 个文件后端路由</span>
+</div>
+</section>
+
+<div class="searchbar">
+<input id="search" placeholder="在本页搜索 P11–P20 任意关键词…">
+<span class="hint">ESC 清空</span>
+</div>
+<div class="no-result">没有匹配的讲次</div>
+
+<article class="lecture" id="P11">
+<div class="lecture-head">
+<span class="num">P11</span>
+<h2>技术选型的第一性原则：哪些活该交给智能体</h2>
+<span class="dur">10m59</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把"第一性原则"落成一张<b>功能分派表</b>——一段需求先拆成 CRUD / Agent / RAG / Harness / vibe coding 五个去处，再谈报价。</div>
+<ul class="points">
+<li>旧范式：客户说要个系统，就先"教育客户"买现成 SaaS；判断起点是<b>我有什么产品</b>。</li>
+<li>第一性原则：判断起点换成<b>客户要解决什么问题</b>。</li>
+<li><b>五问分派表</b>：① 哪些功能交给传统 CRUD；② 哪些用 Agent；③ 哪些用 RAG 知识库；④ 哪些要用 Harness 架构的思想；⑤ 哪些可以联通 vibe coding 工具。</li>
+<li>五问是成本/能力分档：CRUD 最便宜可控；RAG 解决"答得准"；Agent 解决"会动手"；Harness 解决"长时间多步任务能跑完"；vibe coding 解决"根本不值得自己写"。</li>
+<li>工程判断：<b>高频、重要的活直接搬进智能体</b>；以后"后台管理系统 ↔ Harness"对接是常态。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P12">
+<div class="lecture-head">
+<span class="num">P12</span>
+<h2>2026 课程全面转向 Harness：企业真实项目怎么练</h2>
+<span class="dur">15m21</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 课程体系说明会——把"2026 所有新项目一律 Harness 架构"当卖点（营销性质，时长/薪资均为自述）。</div>
+<ul class="points">
+<li>硬性口径：2026 年 2–3 月内部定调——除老项目维护升级外，"只要写项目，就一定是 Harness 架构"。</li>
+<li>体系四块：① 应用工具（Claude Code / Codex / Dify / n8n / Coze）② 应用开发（多模态、RAG、工作流、私有化部署）③ 微调与算法 ④ FDE（前沿部署工程师）。</li>
+<li>生态论（与官网"一切皆插件"呼应）：别人做好的插件能满足 80% 业务场景，剩下 20% 做本地化改造与部署。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P13">
+<div class="lecture-head">
+<span class="num">P13</span>
+<h2>从课到 offer：私教路径、学员涨薪与内推服务</h2>
+<span class="dur">17m46</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 私教班售前说明——服务清单、筛选逻辑、学员案例与促销组合（纯营销/服务介绍，无技术内容；数据全为自述）。</div>
+<ul class="points">
+<li>本讲不含可复用技术结论，本项目化总结仅记录其存在与性质，不评价数据真伪。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P14">
+<div class="lecture-head">
+<span class="num">P14</span>
+<h2>大模型岗位分类和 Harness Agent 项目</h2>
+<span class="dur">18m38</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用"面试官要看多智能体 + Harness 架构"的就业判断，引出企业级项目 <b>ERP_OPENCLAW</b> 的外部依赖全景。</div>
+<ul class="points">
+<li>求职方向二分（主观分类）：① 大模型研究方向 / 预训练（985 硕士起）② AI 大模型工程化落地（应用开发、微调、推理优化、传统算法如 YOLO）。</li>
+<li>面试新要求两条：<b>智能体里有没有多智能体</b>、<b>有没有 Harness 架构</b>。</li>
+<li>项目定位：基于已有 ERP 系统的<b>智能采购助手</b>，不是玩具 demo，要和老系统对接。</li>
+<li>前后端：前端 Vite + Vue（:3000），后端 FastAPI（:8090）；智能体跑进 <b>ASGI</b> 服务，两个理由——异步高并发、真正实现流式输出（SSE）。</li>
+<li>与 ERP 的对接方式：<b>MCP 协议 + 网关</b>读取 Java ERP 数据，不直连数据库。</li>
+<li>两类安全诉求催生<b>沙箱（本质 Docker 容器）</b>：Skills 可能含安全隐患；多用户文件必须隔离。沙箱服务 <code>OpenSandbox:8080</code>，需要<b>镜像仓库</b>预置多套镜像。</li>
+</ul>
+<div class="note chart">
+<h3>项目外部依赖全景</h3>
+<p><b>前端</b> Vite:3000（Vue SPA） → <code>/api/*</code> → <b>FastAPI:8090</b> Chat Backend：创建 Agent Graph / 创建管理沙箱 / 读写会话。</p>
+<p><b>模型</b> DeepSeek（api.deepseek.com）、智谱 AI（open.bigmodel.cn），另有 Web 搜索。</p>
+<p><b>MCP Server:8000</b>（Agent MCP 网关）：代理 8 个 ERP API → Java ERP:8080（采购业务），另提供 26 种图表工具。</p>
+<p><b>云服务器</b>（39.100.100.28）：OpenSandbox:8080、MongoDB:27017、摩托车配件商城:80（供应商报价页面）、镜像/包仓库（阿里云容器镜像 + PyPI）。</p>
+</div>
+</div>
+</article>
+
+<article class="lecture" id="P15">
+<div class="lecture-head">
+<span class="num">P15</span>
+<h2>Harness 项目整体结构</h2>
+<span class="dur">16m14</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 先给一张"Agent 核心代码架构"总图，再逐个目录落实——前端、Web 层、智能体核心、MCP、Skills、启动脚本。</div>
+<ul class="points">
+<li>仓库两个大目录：<code>frontend/</code>（Vue 源码）+ <code>src/</code>（智能体与后端）。</li>
+<li><code>src/</code> 一级：<code>agent/</code>、<code>api_view/</code>（FastAPI/ASGI Web 层）、<code>download/</code>、<code>mcp_server/</code>、<code>skills/</code>、<code>test/</code>，另有 <code>langgraph.json</code>、<code>mcp工具列表.txt</code>、<code>motorparts_db.sql</code>、<code>pyproject.toml</code>、<code>requirements.txt</code>、<code>start_web.py</code>。</li>
+<li><code>agent/</code> 子目录：<code>backend/</code>（文件后端）、<code>memory/</code>、<code>middleware/</code>、<code>subagents/</code>、<code>tools/</code>、<code>main_agent.py</code>。</li>
+<li>Java ERP 是请码士 Java 老师写的<b>模拟系统</b>（摩托车零部件采购管理），带 Swagger 接口文档。</li>
+<li><code>skills/</code> 下全项目共 5–6 个，均为开发期<b>预置</b>；企业里 Skills 一定"随意灵活动态变化"，<b>增删 skill 不影响智能体启停</b>。</li>
+<li>同类成熟实现：Claude Code、OpenClaw、DeepAgents 都是 Harness 架构。</li>
+<li>启动：一个脚本 <code>uvicorn</code> 起后端 + <code>npm run dev</code> 起前端，统一封进 <code>start_web.py</code>。</li>
+<li>结构是<b>两层主从</b>：1 个主智能体 + 若干子智能体 = 多智能体项目。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P16">
+<div class="lecture-head">
+<span class="num">P16</span>
+<h2>Harness 驾驭工程的概念</h2>
+<span class="dur">10m48</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把"提示词工程 → 上下文工程 → 驾驭工程"讲成一条包含关系的演进线，并给出 <b>Agent = Model + Harness</b> 的公式与它要解决的五个工程病。</div>
+<ul class="points">
+<li>三阶段：提示词工程 2022–2024；上下文工程 2025 年 2 月之后；<b>Harness Engineering（驾驭工程）2026 年 2 月之后</b>。</li>
+<li>三者是<b>包含关系</b>：驾驭工程 ⊃ 上下文工程 ⊃ 提示词工程。</li>
+<li>今天单讲提示词没意义：新智能体的提示词不固定，<b>随上下文、随每个用户的偏好运行时动态注入</b>。</li>
+<li>定义：Harness 不再只优化模型输出，而是"构建包裹在模型之外的<b>一整套系统化基础设施</b>"，把不确定的智能转成<b>可靠、稳定、能长时间执行复杂任务的工作引擎</b>。</li>
+<li>新能力只有一个词：<b>长周期复杂任务</b>。对比"明天上海天气"（一句话调工具）与"统计 2026Q1 全部涉案账户并分析其特征"（先拆清单再执行，可能调 7–8 个工具 + 3–5 个 skill）。</li>
+<li>术语本义：Harness = 马具/缰绳，指"模型本身之外的所有东西"——工具、记忆、规划、安全护栏。</li>
+<li>出处：LangChain 团队一篇约 126K 访问量的文章，精炼成 <code>Agent = Model + Harness</code>。</li>
+<li>传统 Agent 的<b>五大工程难题</b>：上下文窗口爆炸、状态丢失、工具调用混乱、缺乏规划、无法从失败中恢复。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P17">
+<div class="lecture-head">
+<span class="num">P17</span>
+<h2>Harness 架构的 Planning 能力</h2>
+<span class="dur">14m12</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用"简单任务 vs 复杂任务"的对照演示，把 Planning 落到 <code>write_todos</code> 这一个工具上——它既做拆解，也做状态追踪。</div>
+<ul class="points">
+<li>简单任务不需要规划：问"你有哪些可用技能/工具"，直接调工具即答，不生成 todo。</li>
+<li>复杂任务样例：把"摩托车火花塞"与"博世火花塞"做<b>采购综合对比分析</b>——没告诉它对比维度，正是需要规划的场景。</li>
+<li>复杂任务第一步是<b>子智能体预判</b>，随后模型调 <code>write_todos</code> 生成任务清单。</li>
+<li>清单固定 6 步：扫描技能目录并加载分析手册 → 收集规格参数 → 市场价格调研 → 供应商渠道对比 → 执行对比分析并生成图表 → 输出报告到 <code>/analysis/</code>；每步带 <code>status</code>，初始只有第 1 步 <code>in_progress</code>。</li>
+<li>执行中清单被反复重写：末段时前 5 步 <code>completed</code>、第 6 步 <code>in_progress</code>——<b>规划 = 拆解 + 逐项状态追踪</b>两件事。</li>
+<li>报告落在沙箱内 <code>/analysis/</code>，下载走 <code>download/</code>；报告里的柱状图、表格、雷达图是<b>现场生成</b>（数据来自网搜 + ERP）。</li>
+<li><code>write_todos</code> 入参里那段"流程"不在代码里，而在 <b>skill 的 md 文件</b>中定义：理解需求 → 收集数据 → 执行分析 → 生成图表 → 生成报告，只定大阶段。</li>
+<li>持久化：<code>CHECKPOINTER（MongoDBSaver）</code> 持久化 Agent state，跨重启保留任务进度。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P18">
+<div class="lecture-head">
+<span class="num">P18</span>
+<h2>解析任务规划 Planning 能力</h2>
+<span class="dur">15m30</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从代码层拆 <code>write_todos</code>——它内部<b>再调一次推理模型</b>生成清单，再用 LangGraph 的 <code>Command</code> 把清单写进 graph state 的独立字段。</div>
+<ul class="points">
+<li>底座是 <b>DeepAgents</b> 框架（LangChain 团队，依赖 <code>langchain 1.2</code> + <code>langgraph 1.1</code>），官网首句即"面向 Agent 的 Harness 框架"。</li>
+<li><code>write_todos</code> 本身不"算"清单，而是<b>再调一次大模型</b>（推理模型）生成。</li>
+<li><b>Planning 的五层核心</b>：① 目标分解与结构化 ② 状态驱动的执行循环 ③ 动态重规划与自我修正 ④ 执行诊断与可解释性 ⑤ 长时任务的抗遗忘机制。</li>
+<li>执行循环里每一步可能走 <b>MCP 工具</b>（查 ERP），也可能走<b>网页抓取 skill</b>——skill 与 tool 都能被 todo 驱动。</li>
+<li>出错即<b>自我修正</b>：某步执行不了就重新生成新的任务项，并做意图识别。</li>
+<li>抗遗忘：清单<b>固化在 state 里且不允许被摘要、剪裁</b>——占 token 很少，但能防止长任务"忘了做到第几步"。反证：Claude Code / Codex 的 <code>compact</code> 摘要后确实会"遗忘"。</li>
+<li>关键实现：清单<b>不写进 <code>messages</code></b>（会被压缩），而写进 state 另一个固定 key；写入方式是 <code>Command(update=...)</code>（全量替换 <code>state["todos"]</code>，并附一条 <code>ToolMessage("Updated todo list")</code>）。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P19">
+<div class="lecture-head">
+<span class="num">P19</span>
+<h2>Harness 架构的文件后端解析</h2>
+<span class="dur">13m13</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 文件后端不是一个目录，而是"可插拔的抽象层 + 按路径路由"——本项目用 <code>CompositeBackend</code> 把 <code>/memories/</code>、<code>/skills/</code> 和其余路径分给两个不同的后端。</div>
+<ul class="points">
+<li>文件后端 = 文件的全套操作：增、删、改、查、<b>执行</b>。</li>
+<li>写在<b>主智能体</b>里，不在子智能体里；因为后端<b>不做智能体间隔离</b>，所有智能体共享同一套文件后端（隔离交给沙箱）。</li>
+<li>实现是 <code>CompositeBackend</code>，内部挂了 3 个后端：<code>sandbox_backend</code>（default）+ <code>store_backend</code>（两条路由）。</li>
+<li>路由规则：<code>/memories/</code> → <code>store_backend</code>；<code>/skills/</code> → <code>store_backend</code>；<b>其余全部 → default → sandbox_backend</b>。两条路由必须显式拆分，否则与 default 冲突。</li>
+<li>实例验证：<code>/analysis/xxx.md</code> 不属两条路由 → 落到沙箱；<code>docker exec</code> 进容器，根目录下果然有那个 md。</li>
+<li><code>store_backend</code> 的数据落在哪由 <b>LangGraph 的 store</b> 决定；项目用默认 <code>InMemoryStore</code>，换 Redis/MongoDB/Postgres 就落到对应库。</li>
+<li><b>抽象层意义</b>：文件后端不代表真有文件系统——可能是容器、KV、Redis、MongoDB；本地 OS、内存字典都能当文件后端。</li>
+<li>文档族谱：<code>StateBackend</code>（仅一次执行线程内有效）/ <code>FilesystemBackend</code>（本地磁盘）/ <code>LocalShellBackend</code> / <code>StoreBackend</code> / <code>CompositeBackend</code> / 自定义后端。</li>
+</ul>
+<pre class="diagram">路径                              → 目标后端
+/memories/{user_id}/...           → StoreBackend（LangGraph store）
+/skills/{scope}/...               → StoreBackend（持久化技能）
+其余（/analysis/ /data/ /workspace/）→ SandboxBackend（OpenSandbox 容器）</pre>
+</div>
+</article>
+
+<article class="lecture" id="P20">
+<div class="lecture-head">
+<span class="num">P20</span>
+<h2>Harness 架构的 Multi-Agent 解析</h2>
+<span class="dur">18m12</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 多智能体的难点不是"拆几个 Agent"，而是<b>上下文隔离下的任务委派</b>；本项目把委派压缩成"提示词定格式 + 大模型抽取 + <code>task()</code> 转交"，并把子智能体做成 <b>yaml 零代码弹性加载</b>。</div>
+<ul class="points">
+<li>多智能体天然是<b>父子/主从</b>结构，且不止两层——子智能体本身还能当主；多层要靠<b>预编译子图</b>实现。</li>
+<li>核心前提：<b>所有子智能体之间上下文完全隔离</b>，A 不知道 B、B 不知道 A——这才是委派存在的理由。</li>
+<li>委派 = 从 A 的上下文里"截取"一部分数据传给 B；载体是一个叫 <code>task</code> 的工具。</li>
+<li>工程化改造：把"要抽哪些字段"<b>写进提示词</b>，再由大模型从 A 的上下文抽取成结构化文本。</li>
+<li><b>抽取 5 项</b>：任务目标、用户编号、分析需求正文、输出要求、重要提醒；<code>task</code> 的 <code>description</code> 参数就是抽取后的成果。</li>
+<li>反向（B 返回 A）同理：返回格式写在 <b>B 自己的配置</b>里——谁提供数据，格式就定义在谁那边。</li>
+<li><b>SubAgent 弹性加载</b>：全项目 1 主 + 2 子（analyst＝供应商比价/行情分析/策略建议/市场调研；order＝创建修改采购单/订单查询/数据补充），两个子 Agent <b>一行代码都没有</b>，只有 yaml。</li>
+<li>yaml 字段：<code>name</code>、<code>description</code>、可调用 <code>tools</code> 列表、<code>skills</code> 目录列表、<code>system_prompt</code>，另有需<b>人工确认</b>的工具列表（<code>interrupt_on</code> 就配在这里）。</li>
+<li>加载链路：<code>load_subagent_configs()</code> 读 <code>configs/*.yaml</code> 并校验 4 个必填字段 → <code>resolve_subagent_tools()</code> 用子串匹配把字符串映射成实际工具对象、合并 <code>extra_middleware</code> → <code>create_deep_agent(subagents=...)</code>。</li>
+<li>扩展方式：新建一个 yaml 丢进 <code>configs/</code> 即可，Python 侧零改动；主智能体 reload/热启动生效。</li>
+</ul>
+</div>
+</article>
+
+<h2 id="recap">B 组小结：把"驾驭工程"变成工程事实</h2>
+<table>
+<tr><th>能力</th><th>落点</th><th>关键机制</th></tr>
+<tr><td>Planning</td><td><code>write_todos</code></td><td>再调推理模型拆解 + <code>Command</code> 写独立 state 字段，不被摘要</td></tr>
+<tr><td>文件后端</td><td><code>CompositeBackend</code></td><td>路径路由：<code>/memories/</code>、<code>/skills/</code> → Store，其余 → 沙箱</td></tr>
+<tr><td>Multi-Agent</td><td><code>task()</code> + yaml</td><td>上下文隔离 → 提示词抽取 5 项 → 子 Agent 零代码加载</td></tr>
+<tr><td>项目结构</td><td><code>src/agent/*</code></td><td>backend / memory / middleware / subagents / tools + main_agent</td></tr>
+</table>
+
+<hr class="sep">
+<p class="lede">下一组：<a href="capabilities.html">C. 六大核心能力 P21–P32 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

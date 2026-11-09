@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C. 六大核心能力 P21–P32 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html" class="active"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">C · 六大核心能力 P21–P32</span>
+<section class="hero">
+<h1>把六大能力逐一落地</h1>
+<p class="lede">人工介入、Sandbox、Skills 自我进化、Context-Engineering、用户偏好、中间件矩阵与 SSE 事件流——这一组是 ERP_OPENCLAW 项目的正文，也是全系列信息密度最高的部分。其中 <b>Sandbox 与中间件矩阵</b>是托住其余五项的基础设施。</p>
+<div class="meta-chips">
+<span class="chip"><b>12</b> 讲</span>
+<span class="chip"><b>~190</b> 分钟</span>
+<span class="chip"><b>2</b> 层中断</span>
+<span class="chip"><b>5</b> 个沙箱组件</span>
+<span class="chip"><b>9 + 8</b> 中间件</span>
+</div>
+</section>
+
+<div class="searchbar">
+<input id="search" placeholder="在本页搜索 P21–P32 任意关键词…">
+<span class="hint">ESC 清空</span>
+</div>
+<div class="no-result">没有匹配的讲次</div>
+
+<h2 id="map6">六大能力一图定位</h2>
+<div class="grid c3">
+<div class="card"><span class="tag">能力 1 · P17–P18</span><h3>Planning 任务规划</h3><p><code>write_todos</code> 拆解 + 状态追踪，清单写进独立 state 字段，永不被摘要。</p></div>
+<div class="card"><span class="tag">能力 2 · P19</span><h3>安全且动态路由的文件后端</h3><p><code>ls/read/write/edit/glob/grep/execute</code>；<code>CompositeBackend</code> 按路径分流。只有沙箱与 local shell 能执行命令。</p></div>
+<div class="card"><span class="tag">能力 3 · P20</span><h3>Multi-Agent 委派</h3><p>上下文隔离 → 抽取 5 项 → <code>task()</code>；子 Agent 由 yaml 弹性加载。</p></div>
+<div class="card"><span class="tag">能力 4 · P26–P29</span><h3>上下文管理</h3><p>Input / Compression / Isolation / Long-term Memory 四流程；85% 阈值 + 手动 compact。</p></div>
+<div class="card"><span class="tag">能力 5 · P24–P25</span><h3>Skills 渐进式披露与自我进化</h3><p>执行在沙箱、存储在 Store；母 Skill 管下载/创建/测试/分配/清理。</p></div>
+<div class="card"><span class="tag">能力 6 · P21 / P30</span><h3>Human-in-the-Loop</h3><p>两层中断：代码级 <code>interrupt()</code> 补字段 + 配置级 <code>interrupt_on</code> 审批。</p></div>
+</div>
+
+<hr class="sep">
+
+<article class="lecture" id="P21">
+<div class="lecture-head">
+<span class="num">P21</span>
+<h2>人工介入解析：采购 700 个火花塞，两次中断零代码</h2>
+<span class="dur">9m54</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用"采购 700 个电装 DENSO 火花塞"的端到端演示，把 Human-in-the-Loop 讲清：第一次中断补齐缺失字段、第二次中断做订单审批，整套中断<b>代码零开发、只靠 YAML 配置</b>。</div>
+<ul class="points">
+<li>场景起点：主智能体把任务<b>转交给「采购订单管理」子智能体</b>（项目有两个子智能体：采购分析 / 采购订单管理）。</li>
+<li><b>第一次中断——缺字段</b>：子智能体调 <code>request_order_info</code> MCP 工具查订单必填字段，发现缺「预计交货日期 / 单价确认 / 订单备注」，触发 <code>interrupt_on</code>，前端呈现卡片式人工确认组件。</li>
+<li>卡片 UI：左列<b>缺少字段</b> 3 项 + 右列<b>已收集数据</b> 6 项 + 底部自然语言输入框。</li>
+<li><b>自然语言回填 + 自动提取</b>：用户输入"预计 2026 年 7 月 30 号交货，协商单价 29 元/个，备注电装 DENSO U27ETR 铱金火花塞采购"，<b>大模型自行解析成结构化 JSON 字段</b>。</li>
+<li><b>第二次中断——审批</b>：准备真正调 <code>order_create</code> 写 ERP 时触发，卡片变成"需要人工确认以下操作" + <code>✓同意 / ✗拒绝</code>。</li>
+<li><code>procurement_order.yaml</code> 里配 <code>interrupt_on: order_create / order_update</code>，各带 <code>allowed_decisions: ["approve","reject"]</code>。</li>
+<li><b><code>interrupt_on</code> 是讲者自研 DSL 而非框架原生</b>：自写 <code>loader.py</code> 把 YAML 翻译成 LangGraph 的 <code>interrupt_on</code> 节点配置。</li>
+<li><code>allowed_decisions</code> 是白名单：拒绝后不调工具、不写库；同意后才真正调 MCP 工具。</li>
+</ul>
+<blockquote class="quote">触发人工介入的代码你都不用写，这是最牛的地方。只要在你的 YAML 配置文件里，你需要触发人工介入在哪个地方，你配上去就行了。</blockquote>
+</div>
+</article>
+
+<article class="lecture" id="P22">
+<div class="lecture-head">
+<span class="num">P22</span>
+<h2>Sandbox 解析（一）：安全边界、作用域隔离与预热</h2>
+<span class="dur">20m46</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把项目最大亮点——基于 OpenSandbox 的安全边界，从"为什么必须有沙箱"讲到"防护三件事 + 用户作用域隔离 + 预热机制"，并现场启动三件套用日志证明时序。</div>
+<ul class="points">
+<li>问题引入：Skill 要么项目预置，要么从网上下载（<b>魔搭社区 Skills 中心</b>、<b>ClawHub</b>），企业项目免不了用外部 Skill。</li>
+<li>两类安全风险：脚本含恶意代码（Python / Node.js / Go / Java 都可能有）；多用户文件必须隔离。</li>
+<li><b>为什么不只靠权限判断</b>：权限判断只能解决读写权限问题，<b>系统命令的安全性很难判断</b>，所以干脆把所有风险行为放进"铜墙铁壁的盒子"里运行。</li>
+<li><b>OpenSandbox</b>：阿里云 <b>2025 年 12 月开源</b>的容器管理项目，用它做所有 Skill 执行、命令执行、文件操作的<b>安全边界兜底</b>。</li>
+<li><b>防护三件事</b>：宿主机文件系统不可见（容器内 <code>/skills/</code>、<code>/data/</code> 是容器自己的）／进程隔离（<code>execute()</code> 的进程在容器内）／资源限制（<code>cpu:"2"</code>、<code>memory:"4Gi"</code>）。</li>
+<li>沙箱内运行环境：Python / Go / Java / Node.js 四种；所有 Skill 脚本、系统命令、HTTP 请求（web-scraper）、web 抓取都在这里跑。</li>
+<li><b>墙内 / 墙外</b>：墙外（宿主机 Windows）＝ FastAPI、MongoDB、MCP Server；墙内（容器 Linux）＝ <code>/skills/</code>、<code>/data/</code>、<code>/analysis/</code>、<code>/memories/</code>、<code>/AGENTS.md</code>、<code>/workspace/</code>。</li>
+<li>两个附加机制：<b>用户作用域隔离</b>（每个用户一个沙箱，张三/李四互不可见）+ <b>沙箱预热</b>（登录即备好空闲沙箱，被占用后立刻补建下一个）。</li>
+</ul>
+<pre class="diagram">┌──────────────────────────────────────────────────┐
+│  宿主机（Windows）                                 │
+│                                                    │
+│   FastAPI（Agent服务器）   MongoDB    MCP Server   │
+│                                                    │
+│   ┌─────────────────────────────────────────────┐ │
+│   │  OpenSandbox 容器（Linux）                    │ │
+│   │                                               │ │
+│   │   /skills/    /data/    /analysis/            │ │
+│   │   /memories/  /AGENTS.md  /workspace/         │ │
+│   │   Python · Go · Java · Nodejs 环境            │ │
+│   │   execute("任意命令") → 在这里运行             │ │
+│   │   web-scraper → 从这里发出 HTTP 请求           │ │
+│   │   技能脚本 → 在这里被调用                      │ │
+│   └─────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────┘</pre>
+<blockquote class="quote">它是最后的兜底线。即使 Skills 全部失守——恶意技能被下载、解压、执行——你把整个沙箱攻陷了都没关系，我把这个沙箱重启起来就可以。</blockquote>
+</div>
+</article>
+
+<article class="lecture" id="P23">
+<div class="lecture-head">
+<span class="num">P23</span>
+<h2>Sandbox 解析（二）：五个 py 文件如何拼成一个沙箱</h2>
+<span class="dur">19m45</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从代码层面解析沙箱创建链路、命令执行链路、故障热替换恢复、预热-认领-补充时序、用户作用域隔离的实现。</div>
+<ul class="points">
+<li>核心结论：<b>沙箱就是 5 个 py 文件层层包装出来的</b>——底层直接怼 Docker、中层把 SDK 翻译成框架协议、外层只做"一个永远不变的引用"。</li>
+<li><b>用户手里拿的永远是 proxy，容器可以在背后被换掉。</b></li>
+<li>创建链路：<code>sandbox_setup.py → setup_sandbox(config, sandbox_id=None, image=None)</code> → <code>SandboxSync.create(image, entrypoint=["/opt/opensandbox/code-interpreter.sh"], env={"PYTHON_VERSION":"3.11"}, resource={"cpu":"2","memory":"4Gi"}, timeout=timedelta(hours=2), connection_config=config)</code> → 返回 <code>OpenSandboxBackend</code>。</li>
+<li><code>entrypoint</code> 决定容器里有哪些语言环境；<code>timeout</code> 定生命周期上限（超时自动回收）。镜像必须<b>预先放在服务器本地镜像库</b>。</li>
+<li>健康与故障：<code>SandboxHealthMiddleware</code> 每次 <code>before_agent</code> ping；失败则重建，连续失败交给熔断中间件（#1/#7 双保险）。</li>
+<li>时序：启动建空闲沙箱#1 → 张三登录认领#1 → 日志"正在创建新沙箱" → 空闲#2 就绪 → 李四认领#2 → 再补#3……企业可一次预热 5/6/10 个。</li>
+<li>结果印证：创建沙箱时上传 <b>13 个基础文件</b>；<code>/analysis/</code> 等目录都在容器内。</li>
+</ul>
+<table>
+<tr><th>组件</th><th>文件</th><th>层级</th><th>职责</th></tr>
+<tr><td><code>SandboxSync</code></td><td>opensandbox 外部 SDK</td><td>基础设施层</td><td>Docker 容器 CRUD（异步）</td></tr>
+<tr><td><code>OpenSandboxBackend</code></td><td><code>custom_opensandbox.py</code></td><td>协议适配层</td><td>包装为 <code>SandboxBackendProtocol</code> 文件后端接口</td></tr>
+<tr><td><code>SandboxBackendProxy</code></td><td><code>sandbox_proxy.py</code></td><td>代理层</td><td>稳定句柄 + 透明代理 + <b>热替换</b></td></tr>
+<tr><td><code>sandbox_manager</code></td><td><code>sandbox_manager.py</code></td><td>生命周期编排层</td><td>用户级沙箱生命周期、预热池</td></tr>
+<tr><td><code>SandboxHealthMiddleware</code></td><td><code>sandbox_health.py</code></td><td>监控层</td><td><code>before_agent</code> 前 ping，挂了自动重建</td></tr>
+</table>
+</div>
+</article>
+
+<article class="lecture" id="P24">
+<div class="lecture-head">
+<span class="num">P24</span>
+<h2>自我进化的 Skills（一）：四阶段生命周期</h2>
+<span class="dur">19m44</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用"一句话让智能体下载并装配新 Skill、立刻可用、自动持久化"的完整演示，引出 Skill 的<b>四阶段生命周期</b>：同步 → 渐进式发现 → 运行时创建/下载 → 分配与持久化。</div>
+<ul class="points">
+<li>Skill 两类来源：① 项目预置（开发期写好）② 运行时新增（用户下载或 Agent 生成）。</li>
+<li><b>执行与存储的分离</b>：所有 Skill 都在 OpenSandbox 中执行（安全），都持久化到 MongoDB/StoreBackend（永久）。动机：沙箱用完即销毁，容器一回收里面文件全没。</li>
+<li><b>阶段 1 同步到沙箱</b>：把本地预置 Skill 上传到沙箱（增量 + <code>_seed_files</code> 首次）。</li>
+<li><b>阶段 2 渐进式发现</b>：每个智能体有独立 Skill 目录，通过中间件做发现。</li>
+<li><b>阶段 3 运行时自动创建/下载新 Skill</b>：母 Skill（<code>skill-management</code>）负责。</li>
+<li><b>阶段 4 分配与持久化</b>：把 Skill 分配到任意子智能体（复制到对应 scope 目录），并持久化到 StoreBackend。</li>
+<li>演示一：复制 Skill URL → "帮我下载这个 Skill 地址，分配给采购分析" → 母 Skill 自动下载、结构校验、功能测试、分配、清理临时文件 → 立刻可用。</li>
+<li>演示二：用户描述"读取并解析 Excel 文件" → 母 Skill 自动创建 SKILL.md + 脚本 → 安装依赖、语法检查、生成模拟测试数据、功能测试 → 询问分配到哪个子智能体。</li>
+<li>企业价值：<b>功能增加/需求改变 = 增删 Skill</b>，Skill 甚至不需要人写。</li>
+<li>母 Skill 内部自带 R2T（ReAct + Task Planning）四步：写 SKILL.md 与脚本 → 装依赖并测试 → 分配与持久化 → 清理临时文件。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P25">
+<div class="lecture-head">
+<span class="num">P25</span>
+<h2>自我进化的 Skills（二）：三个中间件 + 母 Skill + assign_skill</h2>
+<span class="dur">11m47</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把演示背后的代码架构讲清：三个中间件（<code>SkillsMiddleware</code> + <code>SkillsSyncMiddleware</code> + <code>UserSkillsRestoreMiddleware</code>）+ 母 Skill + <code>assign_skill</code> 工具。</div>
+<ul class="points">
+<li><code>SkillsMiddleware</code> —— Deep Agents 框架<b>自带</b>，负责<b>渐进式披露</b>。</li>
+<li><code>SkillsSyncMiddleware</code> —— 自定义，负责<b>本地 src/skills/ ↔ 沙箱</b>同步（增量 + <code>_seed_files</code>）。</li>
+<li><code>UserSkillsRestoreMiddleware</code> —— 自定义，负责<b>StoreBackend ↔ 沙箱</b>同步（新沙箱创建时恢复已持久化 Skill）。</li>
+<li><b>渐进式披露的 token 账</b>：每个 SKILL.md 的 frontmatter 一般 ≤200 token、最大 2000；100 个 Skill × 200 ≈ <b>2 万 token</b>；DeepSeek-V4 上下文百万级，几乎无压力——所以启动只加载元数据，需要时再 <code>read_file</code> 加载全文。</li>
+<li>完整 SKILL.md 较长时采用<b>分页加载</b>，不一次性塞入上下文。</li>
+<li><code>assign_skill</code>：自定义 <code>@tool</code>，本质是"移动目录"——从 <code>main/</code> 移到目标子智能体 scope 目录，并同步到 StoreBackend。</li>
+<li><b>Scope 映射</b>：每个子智能体对应一个 scope，scope 对应沙箱 <code>/skills/{scope}/</code>；主智能体默认 scope 是 <code>main</code>。</li>
+<li>自我进化流程：获取（URL 下载 / 描述创建）→ 沙箱内测试 → 通过则分配+持久化、不通过则自动修复 SKILL.md 再测 → 分配到 scope 目录 → 被 SkillsMiddleware 自动发现。</li>
+<li>讲者特意试过让 Agent 生成更复杂的 Skill、故意让测试不通过，Agent 会<b>自己修复 SKILL.md</b> 直到通过。</li>
+<li>教学定位：不是教"如何用 Skill"，而是教<b>企业级项目里 Skill 的全生命周期管理</b>。</li>
+</ul>
+<pre class="diagram">用户提供 URL ──→ 母 Skill 下载 ZIP ──→ 沙箱内解压
+                                          │
+用户描述需求 ──→ 母 Skill 创建 SKILL.md + 脚本 ──→ 沙箱内测试
+                                                │
+                                          ┌─────┴─────┐
+                                      测试通过     测试不通过
+                                          │             │
+                                    assign_skill   自动修复 SKILL.md
+                                          │             │
+                                复制到 /skills/{scope}/   └→ 回到测试
+                                + StoreBackend 持久化</pre>
+</div>
+</article>
+
+<article class="lecture" id="P26">
+<div class="lecture-head">
+<span class="num">P26</span>
+<h2>Context-Engineering（一）：四流程与三种压缩</h2>
+<span class="dur">14m21</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从"上下文工程 ≠ 提示词工程"切入，讲四流程（输入 → 压缩 → 隔离 → 长期记忆）与压缩的三种机制，并用 <code>CompositeBackend</code> 路由代码演示 <code>/memories/</code> 的落点。</div>
+<ul class="points">
+<li><b>区别</b>：提示词工程只关注"怎么写好 system prompt"；上下文工程关注"怎么把正确的信息在正确的时机送到 Agent"——包括输入组装、压缩、隔离、长期记忆。</li>
+<li><b>a. Input Context</b>：提示词 + 工具描述 + Skills 元数据 + 用户偏好。</li>
+<li><b>b. Compression</b>：三层压缩机制（自动 85% 阈值 / 手动 compact / 子智能体隔离）。</li>
+<li><b>c. Isolation</b>：多智能体之间上下文完全隔离，天然降低单次调用体积。</li>
+<li><b>d. Long-term Memory</b>：<code>/memories/{user_id}/preferences.md</code> + StoreBackend 持久化。</li>
+<li><b>自动摘要 85% 阈值</b>：达到 <code>max_input_tokens</code> 的 85% 触发；触发时 ① 把完整历史写入文件持久化 ② 调大模型总结，用总结替代原历史。</li>
+<li><b>手动 compact</b>：通过 Deep Agents 的 <code>create_summarization</code> 得到一个"摘要工具"，Agent 可<b>自主决策</b>调用——因为自动摘要在"正在处理重要数据"时强行触发会丢语义。</li>
+<li>提示词里写明时机：<code>AGENTS.md</code> 里显式写"在收到子智能体长篇报告时主动调 compact"。</li>
+<li><b>子智能体隔离 = 天然压缩</b>：就算不做摘要，最终调模型时上下文也天然变小；交接格式写在系统提示词里。</li>
+<li>路由实证：<code>/memories/</code> → <code>StoreBackend</code>，命名空间由 <code>runtime.context['user_id']</code> 决定（<code>namespace=lambda rt: (rt.runtime.context.user_id,)</code>）。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P27">
+<div class="lecture-head">
+<span class="num">P27</span>
+<h2>Context-Engineering（二）：config.py 里的模型与沙箱参数</h2>
+<span class="dur">6m20</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把压缩机制落到 <code>config.py</code> 的具体配置——主模型参数、摘要专用模型、备用模型、沙箱连接配置。</div>
+<ul class="points">
+<li><b>主模型</b>：<code>model_kwargs</code> 设 <code>max_tokens=25600</code>，关闭 thinking（<code>"thinking": {"type": "disabled"}</code>）。</li>
+<li><b>摘要专用模型 <code>SUMMARY_MODEL</code></b>：<code>deepseek-v4-flash</code> + <code>temperature=0.3</code> + <code>max_tokens=25600</code>——用小模型做摘要，<b>既省钱又稳定</b>。</li>
+<li><b>备用模型 <code>FALLBACK_MODEL</code></b>：<code>init_chat_model(model="glm-5.1", model_provider="openai", base_url=ZHIPU_BASE_URL, profile={...})</code>——主模型故障自动切智谱 GLM-5.1。</li>
+<li><b>沙箱连接 <code>SANDBOX_CONFIG</code></b>：<code>ConnectionConfigSync(domain="http://39.100.100.28:8080", use_server_proxy=True, request_timeout=timedelta(seconds=60), transport=httpx.HTTPTransport(limits=httpx.Limits(max_connections=20)))</code>。</li>
+<li><code>use_server_proxy=True</code> 走代理，<code>max_connections=20</code> 控并发；文件里还有各类路径常量。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P28">
+<div class="lecture-head">
+<span class="num">P28</span>
+<h2>用户偏好解析（一）：短期/长期记忆边界与「文件即抽象」</h2>
+<span class="dur">12m41</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 划清短期/长期记忆边界，给出 <code>preferences.md</code> 的生命周期与"文件即抽象"的存储观。</div>
+<ul class="points">
+<li>短期记忆 = 剪裁 + 摘要 + 调用专用摘要工具；长期记忆 = <code>preferences.md</code> 用户偏好文件。</li>
+<li>短期记忆也要<b>持久化</b>：主智能体第 271/281 行设 <code>checkpoint</code>，用 <code>mongosave</code>（Mongo 版 Saver）。</li>
+<li><code>checkpoint</code> 是 LangChain 内置持久化机制；集合里存 BSON blob 长文本，需解析才能看。</li>
+<li><code>preferences.md</code> 生命周期：不存在则创建，存在则读取。</li>
+<li><b>文件名只是抽象</b>，真正要存的是文本字符串；可直接存库，返回时再包装成 .md 文件。</li>
+<li>虚拟文件系统后端支持 Redis / MongoDB / PostgreSQL，甚至内存；不必落物理磁盘。</li>
+<li>创建时的<b>默认值写在系统提示词</b>里（提示 Agent 用 <code>write_file</code> 建文件），改格式只改 MD、不改代码。</li>
+</ul>
+<pre class="diagram">新用户首次使用
+   ├─ 不存在 → Agent 调 write_file → 写入 6 个字段默认值 → 创建默认
+   └─ 已存在 → Agent 调 read_file  → 读取偏好
+                        │
+        ContextInjectionMiddleware 注入 → Agent 将偏好传给子 Agent
+                        │
+        MemoryUpdateMiddleware → 自动更新历史 / 更新偏好字段
+                        ▼
+                MongoDBStore（持久存储）</pre>
+</div>
+</article>
+
+<article class="lecture" id="P29">
+<div class="lecture-head">
+<span class="num">P29</span>
+<h2>用户偏好解析（二）：中间件矩阵 + 路径路由的偏好全链路</h2>
+<span class="dur">15m54</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用"中间件矩阵 + 文件后端路径路由"落地偏好全链路，并给出运行时改写演示。</div>
+<ul class="points">
+<li>专门中间件负责找偏好文件；文件<b>基于 <code>user_id</code> 用户作用域</b>，故必须先从运行环境取到 <code>user_id</code>。</li>
+<li>runtime 里 <code>get</code> 出 <code>context</code>，判断有无 <code>user_id</code>，取到 ID/用户名后注入上下文。</li>
+<li>效果可见：第 35 行拿到 <code>user_id</code>，第 4 行偏好路径里的变量被替换成实际用户名。</li>
+<li>演示一：文件不存在 → "偏好文件暂时不存在，首次使用，按默认值创建" → <code>edit_file</code> 创建成功并回显 6 字段（图表类型柱状图 / 货币人民币 / 语言中文 / 最近供应商 / 最近查询）。</li>
+<li>演示二：只说"我用折线图"，Agent 判定为改偏好，调 <code>edit_file</code> <b>只改图表类型</b>，其余字段不动。</li>
+<li>中间件挂在 <b><code>before_agent</code></b> 钩子，所以每轮都重新找文件、重新注入。</li>
+<li><code>MemoryUpdateMiddleware</code> 后台工作：<code>after_agent</code> 提取供应商名称与查询摘要，用于更新偏好文件。</li>
+<li>传递链：前端请求带 user_id → <code>APIView</code> 从 request 取 → <code>create_main_agent()</code> → 写进 <code>runtime.context</code> → 每次 <code>stream</code> 携带 context。</li>
+<li><code>read_file</code> / <code>edit_file</code> / <code>write_file</code> / <code>find</code> 由 <code>BackendProtocol</code> 定义，子类（<code>SandboxBackendProxy</code>、<code>StoreBackend</code>）重写后暴露成工具。</li>
+<li><b>偏好转发子智能体</b>：任务委派时传 5 部分数据；偏好字段<b>不会被摘要</b>，每轮靠中间件重新注入。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P30">
+<div class="lecture-head">
+<span class="num">P30</span>
+<h2>人工介入详解：两层中断与 SSE 恢复闭环</h2>
+<span class="dur">18m07</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> Human-in-the-Loop 的<b>两层中断</b>（代码级 <code>interrupt()</code> + 配置级 <code>interrupt_on</code>）与 SSE 恢复闭环。</div>
+<ul class="points">
+<li>本项目只在<b>下采购单</b>时触发；<b>触发点由程序员决定</b>，写在代码或配置里。</li>
+<li><b>第 1 层——数据完整性补全</b>：自写工具 <code>request_order_info</code> 内部第 33 行调 <code>interrupt()</code>，把"缺失字段 + 已收集数据"抛给前端；可收任意补充信息，灵活。</li>
+<li><b>第 2 层——最终审批</b>：<code>interrupt_on: order_create / order_update</code>，<code>allowed_decisions: ["approve","reject"]</code>，执行前暂停，只能同意/拒绝，克制。</li>
+<li><b>两层互补</b>：自写工具用 <code>interrupt()</code>（灵活）；调他人工具用 <code>interrupt_on</code>（克制——多只能填太多反而易错）。</li>
+<li><code>chat.py</code> 第 300+ 行遍历流式 chunk 的 <code>interrupts</code>，按类型 <code>yield</code> 一条 <code>type="interrupt"</code> 的 SSE 消息：<code>action_requests</code> → <code>hitl_approval</code>；<code>order_info_request</code> → 数据补充。</li>
+<li>前端只有收到 <code>type=interrupt</code> 才渲染黄色横幅 <code>InterruptBanner.vue</code>，不是固定展示。</li>
+<li><b>恢复闭环</b>：前端点"提交补充 / 同意" → 新请求打到 <code>chat.py</code> 第 601 行恢复端点 → 封装成 <code>Command(resume=...)</code> → 再调 <code>agent.astream</code> → Agent 续跑。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P31">
+<div class="lecture-head">
+<span class="num">P31</span>
+<h2>SSE 事件流：StreamingResponse + 生成器 yield</h2>
+<span class="dur">17m59</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用 FastAPI + <code>StreamingResponse</code> + Python 生成器实现 SSE，把流式输出、工具调用、人工介入中断三类事件统一封装成前端可消费的 <code>text/event-stream</code>。</div>
+<ul class="points">
+<li><b>6 大能力复盘</b>：Planning / 文件后端 / Multi-Agent / 上下文管理 / Skills / Human-in-the-Loop。</li>
+<li><b>文件后端边界</b>：普通文件后端 / 数据库文件后端不能执行命令，<b>只有 OpenSandbox 与 local shell 能</b>——Claude Code / OpenClaw / Harness 默认用 local shell。</li>
+<li><b>为什么是 SSE</b>：企业级智能体必须流式输出；可勾选/取消"显示工具调用"。</li>
+<li>FastAPI 是主流：VLLM / SGLang 等推理框架内置 FastAPI；启动文件加载 CORS 中间件。</li>
+<li><code>chat.py</code> 三大视图：<code>chat_stream</code>（流式对话）、<code>chat/{thread_id}/resume</code>（中断恢复）、<code>get_chat_history</code>（普通 JSON，查 MongoDB）。</li>
+<li>响应头：<code>media_type="text/event-stream"</code> + <code>Cache-Control: no-cache</code> + <code>Connection: keep-alive</code> + <code>X-Accel-Buffering: no</code>。</li>
+<li><b>SSE vs WebSocket</b>：SSE 单向（服务端 → 客户端），比 WebSocket 轻量，足够智能体场景。</li>
+<li>生成器 + <code>yield</code>：每次 <code>yield</code> 推一帧；<code>for chunk</code> 遍历，按 <code>chunk_type</code> 分支（<code>interrupt</code> / <code>messages</code> / <code>tool</code>）。</li>
+<li>前端不同图标/边框颜色（黄=工具，蓝=AI），可过滤显示。</li>
+<li><b>双流模式</b>：流 A <code>messages</code> + 流 B <code>values</code>（中断检测），<b>中断检测必须在 messages 处理之前</b>。</li>
+</ul>
+<pre class="code"><span class="kw">async def</span> chat_stream(request: ChatRequest):
+    thread_id = request.thread_id <span class="kw">or</span> str(uuid.uuid4())
+    user_id = request.user_id
+    <span class="kw">return</span> StreamingResponse(
+        stream_chat_response(
+            message=request.message,
+            thread_id=thread_id,
+            user_id=user_id
+        ),
+        media_type=<span class="str">"text/event-stream"</span>,
+        headers={
+            <span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>,
+            <span class="str">"Connection"</span>: <span class="str">"keep-alive"</span>,
+            <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>
+        }
+    )</pre>
+</div>
+</article>
+
+<article class="lecture" id="P32">
+<div class="lecture-head">
+<span class="num">P32</span>
+<h2>中间件解析：9 用户 + 8 框架 = 一条生命周期管线</h2>
+<span class="dur">19m20</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 9 个用户绑定中间件 + 8 个框架自动注入中间件，形成"健康守护 → 上下文注入 → 技能同步 → 摘要压缩 → 记忆更新 → 熔断保护 → 调用限制"的完整管线，覆盖 10 种故障场景。</div>
+<ul class="points">
+<li><b>中间件矩阵是 Harness 项目最大亮点</b>：上下文剪裁、保底摘要、沙箱健康检查、人工介入——全部靠中间件。</li>
+<li>绑定方式：<code>create_main_agent()</code> 时传 <code>middleware=[...]</code>（代码第 278 行），列表内恰好 9 项。</li>
+<li><b>框架内置 8 个</b>：<code>TodoListMiddleware</code> / <code>MemoryMiddleware</code> / <code>SkillsMiddleware</code> / <code>FilesystemMiddleware</code> / <code>SubAgentMiddleware</code> / <code>SummarizationMiddleware</code> / <code>AnthropicPromptCachingMiddleware</code> / <code>PatchToolCallsMiddleware</code>。</li>
+<li><b>摘要双保险</b>：<code>SummarizationMiddleware</code> 保底（85%）；程序员应在关键节点<b>主动调 <code>compact_conversation</code></b>（收到子 AI 长篇报告必须调、完成对比分析后、对话超 6 轮且距上次压缩超 3 轮）。</li>
+<li><b>9 个用户绑定 = 7 自定义 + 2 LangChain 内置</b>；后两个默认不生效，必须手动绑定。</li>
+<li><b>关键阈值</b>：沙箱连续报错 <b>2 次</b>熔断；模型调用每轮 <b>&gt; 50</b> 终止；工具调用每轮 <b>&gt; 200</b> 终止。</li>
+<li><code>MemoryUpdateMiddleware</code>：<code>after_agent</code> 取 <code>state["messages"]</code>，从后往前找最后一条 HumanMessage，判断是否 ERP 对话，用 <code>SUMMARY_MODEL</code> 提取供应商/摘要写回偏好文件。</li>
+<li><b>钩子体系</b>：至少 5 种常用钩子（<code>before_agent</code> / <code>after_agent</code> / <code>before_model</code> / <code>after_model</code> / <code>wrap_tool_call</code>）。</li>
+</ul>
+<table>
+<tr><th>#</th><th>中间件</th><th>来源</th><th>钩子</th><th>职责</th></tr>
+<tr><td>1</td><td><code>SandboxHealthMiddleware</code></td><td>自定义</td><td>before_agent</td><td>ping 沙箱 → 失败自动重建</td></tr>
+<tr><td>2</td><td><code>ContextInjectionMiddleware</code></td><td>自定义</td><td>before_agent</td><td>注入 user_id/username 到 SystemMessage</td></tr>
+<tr><td>3</td><td><code>SkillsSyncMiddleware</code></td><td>自定义</td><td>before_agent</td><td>本地 skills 增量同步到沙箱</td></tr>
+<tr><td>4</td><td><code>UserSkillsRestoreMiddleware</code></td><td>自定义</td><td>abefore_agent</td><td>StoreBackend 技能恢复到沙箱</td></tr>
+<tr><td>5</td><td><code>SummarizationToolMiddleware</code></td><td>DeepAgents（手动启用）</td><td>wrap_model_call</td><td>compact_conversation + 自动摘要</td></tr>
+<tr><td>6</td><td><code>MemoryUpdateMiddleware</code></td><td>自定义</td><td>after_agent</td><td>对话后写回偏好文件</td></tr>
+<tr><td>7</td><td><code>SandboxCircuitBreakerMiddleware</code></td><td>自定义</td><td>before_agent</td><td>沙箱连续失败 → 熔断</td></tr>
+<tr><td>8</td><td><code>ModelCallLimitMiddleware</code></td><td>LangChain</td><td>before/after_model</td><td>模型调用 &gt; 50 终止</td></tr>
+<tr><td>9</td><td><code>ToolCallLimitMiddleware</code></td><td>LangChain</td><td>before/after_model, wrap_tool_call</td><td>工具调用 &gt; 200 终止</td></tr>
+</table>
+</div>
+</article>
+
+<h2 id="fault">故障场景覆盖矩阵</h2>
+<table>
+<tr><th>#</th><th>故障场景</th><th>处理中间件</th><th>行为</th></tr>
+<tr><td>1</td><td>沙箱超时 / 容器被销毁</td><td>#1 SandboxHealth</td><td>ping 检测 → 自动重建 → 继续</td></tr>
+<tr><td>2</td><td>沙箱服务宕机（重建也失败）</td><td>#1 → #7 熔断</td><td>重建尝试 → 连续失败 → 熔断</td></tr>
+<tr><td>3</td><td>工具调用抛异常</td><td>ToolNode</td><td><code>ToolMessage(status="error")</code> → Agent 自我纠正</td></tr>
+<tr><td>4</td><td>上下文溢出</td><td>#5 + 框架</td><td>自动摘要 + Agent 判断摘要必要性</td></tr>
+<tr><td>5</td><td>LLM 陷入循环</td><td>#8 ModelCallLimit</td><td>50+ 次强制终止</td></tr>
+<tr><td>6</td><td>工具调用风暴</td><td>#9 ToolCallLimit</td><td>200+ 次强制终止</td></tr>
+<tr><td>7</td><td>用户记忆丢失</td><td>#6 MemoryUpdate</td><td>每次对话后写回 StoreBackend</td></tr>
+<tr><td>8</td><td>沙箱丢失技能文件</td><td>#3 + #4</td><td>启动时自动恢复</td></tr>
+<tr><td>9</td><td>用户身份未注入</td><td>#2 ContextInjection</td><td>首次 step 注入 SystemMessage</td></tr>
+<tr><td>10</td><td>模型供应商故障</td><td><code>FALLBACK_MODEL</code></td><td>自动切智谱 GLM-5.1</td></tr>
+</table>
+
+<hr class="sep">
+<p class="lede">下一组：<a href="async.html">D. AsyncSubAgent P33–P36 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

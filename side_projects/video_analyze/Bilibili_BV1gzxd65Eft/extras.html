@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>术语表 · 图表实证 · 存疑清单 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html" class="active"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">附录 · Reference</span>
+<h1>术语表 · 关键数字 · 图表实证 · 存疑清单</h1>
+<p class="lede">把全课散落在 46 讲里的专有名词、关键数字与帧实证图表集中起来。术语按"产品与生态 / 内核机制 / 项目实战 / Skills / 上下文与记忆 / 中间件与运行时"六组归类；数字速查表给出每个数的含义与出处；图表索引按分P列出被拉片过的关键架构图；最后附存疑与口径说明。</p>
+
+<div class="searchbar">
+<input id="search" type="search" placeholder="搜索：Cordis / waterfall / StoreBackend / 85% / 新二八…" aria-label="全页搜索">
+<span class="hint">Esc 清空 · 点标题折叠</span>
+</div>
+<div class="no-result">没有匹配的段落，换个关键词试试。</div>
+
+<h2>术语表</h2>
+
+<section class="lecture" id="g-product">
+<div class="lecture-head"><span class="num">1</span><h2>产品与生态</h2><span class="dur">6 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>DeepSeek Harness</td><td>模型之外那一整套工程系统：提示词、工具调用、文件系统、沙箱、记忆、上下文管理、约束机制、反馈回路、钩子/中间件、编排逻辑；CLI 包名 <code>@deepseek-ai/dsh</code>，启动命令 <code>npx @deepseek-ai/dsh web</code>。</td><td>P01·P37</td></tr>
+<tr><td>Cordis</td><td>Harness 的插件内核框架（与 Koishi 生态同源）：提供<b>服务注册/注入、事件追加与派发、生命周期钩子</b>三大原语；Harness 所有"一切皆插件"的能力都建立在它之上。ASR 常误识为"CorelX/扣的/科迪斯"。</td><td>P01·P04</td></tr>
+<tr><td>一切皆插件</td><td>DeepSeek Harness 官网 slogan：模型、工具、技能、会话、沙箱、存储、循环、调度、UI 等所有 Agent 能力均由插件组合而成，可自由替换与灵活重组；默认 <b>159 个插件</b>（P02 帧实证）。</td><td>P01·P02</td></tr>
+<tr><td>四种 Agent 预设</td><td>标准 <code>standard</code>（功能完整）、PTC <code>ptc</code>（标准全部 + Code Mode SDK 单步多工具编排）、极简 <code>minimal</code>（持久 bash + str_replace_editor）、创造 <code>create</code>（标准全部 + 运行时检查 + 插件实验 + preset 创作指导）。"预设 = 一个会话里 Agent 所运行的插件组装"。</td><td>P02</td></tr>
+<tr><td>MIT 开源</td><td>DeepSeek Harness 采用 MIT 协议开源，约束的是 Harness 框架层而非模型权重；讲者称"底座属于所有人"。</td><td>P43·P44</td></tr>
+<tr><td>新二八原则</td><td>P46 观点：AI 把 80% 很快做完，剩下的 20% 是"能跑→好用"的落地活、成本指数上升且必须由人做；<b>Harness 的本质就是让这 20% 做得更快、更高效</b>。80 分半天可得，80→90 约 7 天，90→95 约 30 天，95→98/99 约 3 个月。</td><td>P46</td></tr>
+</table>
+</div>
+</section>
+
+<section class="lecture" id="g-kernel">
+<div class="lecture-head"><span class="num">2</span><h2>内核机制</h2><span class="dur">10 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>session 四事件</td><td><code>session/created</code>（创建，scope 过滤）、<code>session/disposed</code>（销毁/离开 store）、<code>session/event</code>（追加后广播，fire-and-forget）、<code>session/flush</code>（持久化检查点，awaited parallel durability checkpoint）。全部在<b>内存</b>中发生，<b>flush ≠ 持久化</b>。</td><td>P04</td></tr>
+<tr><td>waterfall</td><td>Cordis 的环绕事件模式 <code>@mode waterfall</code>，洋葱模型，每个监听器可 allow/deny/ask 或 accept/replace/enrich/block。tools 三层、llm/stream 都用它。</td><td>P05·P07</td></tr>
+<tr><td>tools 三层拦截</td><td><code>tools/pre-execute</code>（PreToolDecision：allow/deny/ask）→ <code>tools/execute</code>（ToolDispatchExecution）→ <code>tools/post-execute</code>（PostToolDecision：accept/replace/enrich/block）。三者都是 <code>@mode waterfall</code>，讲者拿 Spring AOP 类比。</td><td>P05</td></tr>
+<tr><td>Agent Loop 主循环</td><td>turn/step 双粒度：入口 → 加载 → 日志/存储 → 输入 → prompt + 工具 → agent-loop → LLM → END，<b>END 是状态值而非独立步骤</b>。七步循环详见 P06/P08。</td><td>P06·P08</td></tr>
+<tr><td>LlmAdapter</td><td><code>export abstract class LlmAdapter</code>（describe / stream）+ <code>interface PreparedLlmCall</code>（config / retryPolicy / context / adapterDefaults）+ <code>class LlmRuntime extends Service</code>；<code>stream()</code> → <code>streamWithRegistration()</code> → <code>ctx.waterfall(this, 'llm/stream', options, ...)</code>。换模型不改源码的机制。</td><td>P07</td></tr>
+<tr><td>插件树三层</td><td>Harness 插件配置的覆盖结构：<b>用户级 → 项目级 → 系统级</b>，从 <code>apps/cli/src/bin.ts</code> 入口进入，逐层叠覆盖。</td><td>P03</td></tr>
+<tr><td>持久化三件套</td><td>插件列表里名字带 <code>storage</code> / <code>storage-json</code> / 守护线程的三个插件，负责把 <code>flush</code> 之后的检查点真正落盘。</td><td>P04</td></tr>
+<tr><td>FiberState</td><td>agent-loop 内的状态机：<code>UNLOADING / DISPOSED / FAILED</code> 属于 <code>INACTIVE_STATES</code>，<code>FactoryOwnership</code> 类跟踪 accepting / teardown / inactive / liveAgents / startupTasks。</td><td>P06</td></tr>
+<tr><td>插件 ≠ 工具</td><td>插件是"注册了什么能力"，工具是"某次会话实际挂上去、model 能调的"。159 个插件，但一次对话经 prompt 组装后实际可能只有 3 个工具。</td><td>P02</td></tr>
+<tr><td>system-prompt 插件</td><td><code>packages/core/system-prompt/src/index.ts</code>，负责把会话级信息（含运行时注入的用户偏好）拼成最终 system prompt。</td><td>P05</td></tr>
+</table>
+</div>
+</section>
+
+<section class="lecture" id="g-project">
+<div class="lecture-head"><span class="num">3</span><h2>项目实战 · LangChain Deep Agents 层</h2><span class="dur">10 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<div class="note warn"><h3>口径校正</h3><p>P22–P36 讲的"Harness 架构"落地实现，实际是 <b>LangChain 的 Deep Agents 框架</b>（<code>create_deep_agent</code>）；ASR 中"longch/狼嵌"→ LangChain、"long graph/狼graph"→ LangGraph、"deep agent/DA 框架"→ Deep Agents、"ASYC/ASIC sub agent"→ AsyncSubAgent。</p></div>
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>Deep Agents</td><td>LangChain 团队的框架，提供 <code>create_deep_agent</code> API；本项目的底座（非讲者自研）。0.5 后新增 AsyncSubAgent，讲课时已到 0.6.7。</td><td>P22·P33</td></tr>
+<tr><td>LangGraph</td><td>Deep Agents 的图状态机底座；<code>Command(update={...})</code> 把 write_todos 产出写进 graph state 独立字段，从而<b>不被摘要、不被裁剪</b>。</td><td>P18·P33</td></tr>
+<tr><td>CompositeBackend</td><td>组合多个文件后端，按 URL 路径路由：<code>/memories/</code> → StoreBackend，<code>/persisted-skills/</code> → StoreBackend，default → SandboxBackendProxy。讲者在 P26 用代码演示。</td><td>P19·P26</td></tr>
+<tr><td>StoreBackend</td><td>虚拟文件系统后端，可落 MongoDB / Redis / PostgreSQL / 内存；"文件名只是抽象，存哪里无所谓"。</td><td>P28</td></tr>
+<tr><td>SandboxBackendProxy</td><td>稳定的沙箱句柄 + 热替换：沙箱重建时引用不丢失。</td><td>P22·P23</td></tr>
+<tr><td>OpenSandbox</td><td>阿里云的隔离沙箱容器服务，本项目默认镜像 <code>sandbox-registry.cn-zhangjiakou.cr.aliyuncs.com/...</code>，<code>PYTHON_VERSION=3.11</code>，<code>cpu=2 / memory=4Gi / timeout=2h</code>，<code>network_policy</code> 默认 deny + egress 白名单 <code>pypi.org</code> / <code>*.github.com</code>。</td><td>P15·P23</td></tr>
+<tr><td>MCP (Model Context Protocol)</td><td>魔塔社区 MCP 广场发布的 24h 有效期 MCP-Server（URL 形如 <code>AF389...</code>），过期即报错；提供图表可视化能力。</td><td>P28</td></tr>
+<tr><td>write_todos</td><td>Planning 工具：内部再调一次推理模型生成清单，再用 LangGraph 的 <code>Command</code> 写进 graph state 独立字段。入参含 context + 流程描述（流程来自 skill 的 md 文件）。</td><td>P17·P18</td></tr>
+<tr><td>task 工具</td><td>子 Agent 调度工具，由 <code>SubAgentMiddleware</code> 提供，主智能体用它把任务委派给子智能体；子 Agent 间上下文<b>完全隔离</b>。</td><td>P20·P26</td></tr>
+<tr><td>AgentLoader</td><td><code>api_view/agent_loader.py</code> 单例，负责预计算（MCP 工具 + 图表工具 + YAML 配置）+ 生命周期管理，启动日志可见"已加载子 Agent 配置：procurement-analyst ← procurement_analyst.yaml"。</td><td>P26·P15</td></tr>
+</table>
+</div>
+</section>
+
+<section class="lecture" id="g-skills">
+<div class="lecture-head"><span class="num">4</span><h2>Skills · 渐进式披露与自我进化</h2><span class="dur">7 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>母 Skill</td><td><code>skill-management</code>：管 Skill 全生命周期的入口 Skill（同步→发现→创建/下载→分配+持久化四阶段）。</td><td>P25</td></tr>
+<tr><td>SKILL.md</td><td>Skill 元数据文件：frontmatter（≤2000 字符）+ 正文；渐进式披露时只加载 frontmatter，按需激活才加载正文。</td><td>P25</td></tr>
+<tr><td>渐进式披露</td><td>progressive disclosure：启动时只把每个 Skill 的 frontmatter 注入提示词（每条约 200 token），按需激活后才加载全文；节省 token 预算的核心机制。</td><td>P25</td></tr>
+<tr><td>assign_skill</td><td>Skill 管理工具：把 Skill 目录移动到目标 scope（main/order/procurement…）+ 调 StoreBackend 持久化，使沙箱回收后 Skill 不丢。</td><td>P24·P25</td></tr>
+<tr><td>scope</td><td>Skill 的作用域（main/order/procurement/procurement-analysis…），决定哪个子智能体能看见哪些 Skill；子智能体配置文件中的 <code>skills: [/skills/order/]</code> 即按目录发现。</td><td>P25·P30</td></tr>
+<tr><td>执行与存储分离</td><td>沙箱随时回收，Skill 必须落到 StoreBackend 持久化；这是"沙箱回收带走 Skill"痛点的工程解法。</td><td>P24</td></tr>
+<tr><td>SkillsSyncMiddleware</td><td>钩子 <code>before_agent</code> + <code>abefore_agent</code>，把本地 skills 增量同步到沙箱容器；与 <code>UserSkillsRestoreMiddleware</code>（沙箱重启后恢复）协作。</td><td>P25·P32</td></tr>
+</table>
+</div>
+</section>
+
+<section class="lecture" id="g-context">
+<div class="lecture-head"><span class="num">5</span><h2>上下文工程与记忆</h2><span class="dur">9 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>驾驭工程</td><td>Harness Engineering：2026 年 2 月之后出现的阶段（提示词工程 2022–2024、上下文工程 2025.2 之后）；三者是<b>包含关系</b>。公式 <code>Agent = Model + Harness</code>（LangChain 团队文章，约 126K 阅读量）。</td><td>P16</td></tr>
+<tr><td>上下文工程四流程</td><td>Input（提示词+工具描述+Skills 元数据+偏好）→ Compression（自动/手动/隔离三层）→ Isolation（多智能体上下文完全隔离）→ Long-term Memory（<code>/memories/{user_id}/preferences.md</code> + StoreBackend）。</td><td>P26</td></tr>
+<tr><td>压缩三机制</td><td>① <b>85% 阈值</b>自动摘要（<code>SummarizationMiddleware</code> 保底）；② 手动 <code>compact_conversation</code> 工具（<code>SummarizationToolMiddleware</code> 暴露，Agent 自主决策）；③ 子智能体隔离（天然减小上下文）。</td><td>P26·P32</td></tr>
+<tr><td>preferences.md</td><td>用户偏好文件：6 字段（图表类型 / 货币 / 语言 / 最近供应商 / 最近查询 / 其他）；<b>文件名只是抽象</b>，真正存的是字符串；不存在则创建，存在则读取；由 <code>ContextInjectionMiddleware</code> 每轮注入、<code>MemoryUpdateMiddleware</code> 每轮写回。</td><td>P28·P29</td></tr>
+<tr><td>checkpoint</td><td>LangGraph 内置持久化机制；主智能体 271/281 行设 checkpoint，用 <code>mongosave</code>（Mongo 版 Saver），URI 形如 <code>mongodb://root:123456@39.100.100.228:27017</code>，库 <code>mongo_test</code>。</td><td>P28</td></tr>
+<tr><td>SUMMARY_MODEL</td><td>摘要专用模型 <code>deepseek-v4-flash</code>，<code>temperature=0.3</code>，<code>max_tokens=25600</code>，<code>thinking.disabled</code>；节省成本 + 稳定输出。</td><td>P27</td></tr>
+<tr><td>FALLBACK_MODEL</td><td>备用模型 <code>glm-5.1</code>（智谱 GLM），<code>max_input_tokens=12800 / max_output_tokens=8192</code>，主模型故障时自动切。</td><td>P27</td></tr>
+<tr><td>主动 compact 触发条件</td><td>写在主智能体 system prompt 中：① 收到子 AI 返回的长篇报告必须调用；② 完成零配件对比分析后；③ 对话超过 <b>6 轮</b>且距上次压缩超过 <b>3 轮</b>。</td><td>P32</td></tr>
+<tr><td>_extract_ai_summary</td><td>取最后 AI 消息<b>前 300 字符</b>作为摘要输入；<code>MemoryUpdateMiddleware</code> 的辅助函数。</td><td>P29</td></tr>
+</table>
+</div>
+</section>
+
+<section class="lecture" id="g-middleware">
+<div class="lecture-head"><span class="num">6</span><h2>中间件与运行时</h2><span class="dur">11 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:160px">术语</th><th>释义</th><th style="width:80px">出处</th></tr>
+<tr><td>中间件 9 + 8</td><td>用户绑定 9 个（7 自定义 + 2 LangChain 内置 <code>ModelCallLimitMiddleware</code> / <code>ToolCallLimitMiddleware</code>，必须手动绑定才生效）+ 框架自动注入 8 个（<code>create_deep_agent</code> 时自动加）。</td><td>P32</td></tr>
+<tr><td>SandboxHealthMiddleware</td><td>#1 自定义；钩子 <code>before_agent</code>，每轮 ping 沙箱，失败自动重建。</td><td>P32</td></tr>
+<tr><td>SandboxCircuitBreakerMiddleware</td><td>#7 自定义；沙箱连续报错 <b>2 次</b>即熔断，与 #1 协作形成双重保险（自愈 + 熔断）。</td><td>P32</td></tr>
+<tr><td>ContextInjectionMiddleware</td><td>#2 自定义；钩子 <code>before_agent</code> + <code>abefore_agent</code>，注入 <code>user_id</code> / <code>username</code> / 用户偏好到 SystemMessage。</td><td>P29·P32</td></tr>
+<tr><td>MemoryUpdateMiddleware</td><td>#6 自定义；钩子 <code>after_agent</code>，每次对话后自动写回 <code>/memories/{user_id}/preferences.md</code>，更新 <code>recent_suppliers</code> 与 <code>recent_queries</code>（追加模式）。</td><td>P29·P32</td></tr>
+<tr><td>interrupt()</td><td>代码级人工介入：调用该函数即触发中断；灵活，可收任意补充信息。例 <code>request_order_info</code> 工具内含。</td><td>P30</td></tr>
+<tr><td>interrupt_on</td><td>配置级人工介入：YAML 中为特定工具（<code>order_create</code> / <code>order_update</code>）配白名单 <code>allowed_decisions: ["approve","reject"]</code>，克制。讲者自研 DSL，由 <code>loader.py</code> 翻译成 LangGraph 的 <code>interrupt_on</code> 节点配置。</td><td>P21·P30</td></tr>
+<tr><td>SSE 事件流</td><td>FastAPI <code>StreamingResponse</code> + Python 生成器 <code>yield</code>，<code>media_type="text/event-stream"</code>；<code>chunk_type</code> 分支决定前端渲染成 AI（蓝）/ 工具（黄）/ 中断（横幅）。比 WebSocket 轻量，单向流。</td><td>P31</td></tr>
+<tr><td>AsyncSubAgent</td><td>Deep Agents 0.5 后新增的预览功能：主智能体调 <code>start_async_task</code> → Agent Protocol Server → 异步子智能体，<b>20–50ms 即返回 task_id</b>，前端每 <b>5 秒</b>轮询 <code>/api/async-tasks/{task_id}</code>。异步 ≠ Python 协程，而是<b>生命周期从主请求里拆解出来</b>。</td><td>P33·P34</td></tr>
+<tr><td>Agent Protocol Server</td><td>由 Deep Agents 提供，本质是 LangGraph 本地服务（<code>langgraph dev --host 127.0.0.1 --port 2024</code>）；职责 7 条：创建 thread、启动 run、查询状态、保存上下文、取消任务、追加指令、远程 Agent 统一协议。控制链路单向收敛。</td><td>P33</td></tr>
+<tr><td>77 步请求链路</td><td>飞书文档中的完整请求时序图：从用户输入 → stream_chat_response → get_display_messages → Command(resume=...) → agent.astream → 子 Agent 恢复 / 中断触发 / HITL 审批 / 订单创建 / 消息保存。</td><td>P31</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="sep">
+<h2>关键数字速查</h2>
+
+<section class="lecture" id="numbers">
+<div class="lecture-head"><span class="num">★</span><h2>46 讲里反复出现的关键数字</h2><span class="dur">25 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:120px">数字</th><th>含义</th><th style="width:90px">出处</th></tr>
+<tr><td><b>46</b></td><td>全系列总讲数（P01–P46），总时长约 8 小时。</td><td>全系列</td></tr>
+<tr><td><b>159</b></td><td>DeepSeek Harness 默认插件数（未做任何二次开发时）；ASR 常误识为 3159。</td><td>P02</td></tr>
+<tr><td><b>4</b></td><td>开箱即用预设数：standard / ptc / minimal / create。</td><td>P02</td></tr>
+<tr><td><b>12</b></td><td>本报告归纳的核心心智模型数。</td><td>主页</td></tr>
+<tr><td><b>85%</b></td><td><code>SummarizationMiddleware</code> 自动摘要阈值：上下文达 <code>max_input_tokens × 85%</code> 时触发。</td><td>P26·P32</td></tr>
+<tr><td><b>200 token</b> / <b>2000 字符</b></td><td>单条 Skill frontmatter 上限 / 字符上限；渐进式披露时只加载这部分。</td><td>P25</td></tr>
+<tr><td><b>2 万 token</b></td><td>100 个 Skill × 200 token frontmatter = 启动期 Skill 注入预算上限。</td><td>P25</td></tr>
+<tr><td><b>6 轮 / 3 轮</b></td><td>主动 compact 触发条件：对话超 6 轮且距上次压缩超 3 轮。</td><td>P32</td></tr>
+<tr><td><b>300 字符</b></td><td><code>_extract_ai_summary</code> 取最后 AI 消息前 300 字符作为摘要输入。</td><td>P29</td></tr>
+<tr><td><b>50 次 / 200 次</b></td><td><code>ModelCallLimitMiddleware</code> 每轮模型调用上限 / <code>ToolCallLimitMiddleware</code> 每轮工具调用上限，超出强制终止。</td><td>P32</td></tr>
+<tr><td><b>2 次</b></td><td><code>SandboxCircuitBreakerMiddleware</code> 熔断阈值：沙箱连续报错 2 次即终止本次会话。</td><td>P32</td></tr>
+<tr><td><b>25600</b></td><td><code>SUMMARY_MODEL</code> / 主模型 <code>max_tokens</code>；同时关闭 <code>thinking</code>。</td><td>P27</td></tr>
+<tr><td><b>12800 / 8192</b></td><td>GLM-5.1 备用模型 profile：<code>max_input_tokens / max_output_tokens</code>。</td><td>P27</td></tr>
+<tr><td><b>0.3</b></td><td><code>SUMMARY_MODEL</code> temperature；摘要需要稳定输出。</td><td>P27</td></tr>
+<tr><td><b>60s / 20</b></td><td><code>SANDBOX_CONFIG</code>：<code>request_timeout=60s</code>，<code>max_connections=20</code>。</td><td>P27</td></tr>
+<tr><td><b>2h / 2cpu / 4Gi / py3.11</b></td><td><code>sandbox_setup.py</code>：沙箱 timeout、CPU、内存、Python 版本；<code>network_policy</code> 默认 deny + egress 白名单。</td><td>P15</td></tr>
+<tr><td><b>2024</b></td><td>Agent Protocol Server 默认端口（<code>langgraph dev --port 2024</code>），讲者示例值非框架硬编码。</td><td>P33</td></tr>
+<tr><td><b>20–50ms</b></td><td><code>start_async_task</code> 返回 task_id 的响应时间。</td><td>P33</td></tr>
+<tr><td><b>5 秒</b></td><td>前端轮询 <code>/api/async-tasks/{task_id}</code> 的间隔。</td><td>P33·P34</td></tr>
+<tr><td><b>~1 分钟</b></td><td>采购分析子智能体同步跑完的典型时长（引入 AsyncSubAgent 的痛点）。</td><td>P33</td></tr>
+<tr><td><b>77 步</b></td><td>飞书文档"完整请求链路"步数，从用户输入到消息保存。</td><td>P31</td></tr>
+<tr><td><b>9 + 8</b></td><td>用户绑定中间件数 + 框架自动注入中间件数。</td><td>P32</td></tr>
+<tr><td><b>10</b></td><td>故障场景覆盖矩阵中的场景数（沙箱超时 / 服务宕机 / 工具异常 / 上下文溢出 / LLM 死循环 / 工具风暴 / 记忆丢失 / 技能丢失 / 身份未注入 / …）。</td><td>P32</td></tr>
+<tr><td><b>13</b></td><td>P24 演示里一次性上传到沙箱的基础文件数。</td><td>P24</td></tr>
+<tr><td><b>126K</b></td><td>LangChain 团队"Harness"文章阅读量（讲者口述）。</td><td>P16</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="sep">
+<h2>图表实证索引</h2>
+<p class="lede">下表按分P列出被拉片过的关键架构图，每条均带帧号或时段锚点，便于回查。</p>
+
+<section class="lecture" id="charts">
+<div class="lecture-head"><span class="num">★</span><h2>被拉片过的关键架构图（16 组）</h2><span class="dur">16 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<table>
+<tr><th style="width:50px">P</th><th>图名</th><th>帧/时段</th></tr>
+<tr><td>P02</td><td>四种 Agent 预设设置页文案</td><td>P02_0111 / P02_0119</td></tr>
+<tr><td>P03</td><td>插件树三层覆盖结构</td><td>P03_0330 / P03_0348 / P03_0357</td></tr>
+<tr><td>P04</td><td><code>packages/core/session/src/index.ts</code> 事件声明（四事件 + scope 注释）</td><td>P04_0214 / P04_0232</td></tr>
+<tr><td>P05</td><td>tools 三层拦截 waterfall 接口声明</td><td>P05_0380 / P05_0405 / P05_0425 / P05_0470</td></tr>
+<tr><td>P06</td><td>agent-loop/src/index.ts FiberState · FactoryOwnership</td><td>P06_0290 / P06_0320</td></tr>
+<tr><td>P07</td><td>LlmAdapter · PreparedLlmCall · LlmRuntime.stream 环绕事件</td><td>P07_0170 / P07_0210</td></tr>
+<tr><td>P15</td><td>Agent 核心代码架构总图（frontend + src/agent + api_view）+ sandbox_setup.py</td><td>00:16–00:46 帧</td></tr>
+<tr><td>P17·P18</td><td>write_todos 任务清单前端呈现 + Command 时序</td><td>P17 演示段</td></tr>
+<tr><td>P21</td><td>request_order_info 中断卡片 UI（缺少字段 + 已收集数据）</td><td>P21_0120 / P21_0462</td></tr>
+<tr><td>P23</td><td>Sandbox 五组件：预热→认领→补充→重建→Proxy 热替换</td><td>P23_1076 / P23_1073 / P23_1060 / P23_1047</td></tr>
+<tr><td>P24·P25</td><td>Skills 四阶段生命周期 + 渐进式披露时序图 + 自我进化流程</td><td>P25 文档帧</td></tr>
+<tr><td>P26</td><td>提示词工程 vs 上下文工程对比 + CompositeBackend 路由代码</td><td>P26 00:14 / 03:28 / 03:50</td></tr>
+<tr><td>P28·P29</td><td>preferences.md 生命周期 + 偏好更新 8 步时序 + CompositeBackend 路由</td><td>P28_0307 / P29_0507 / P29_0820</td></tr>
+<tr><td>P30·P31</td><td>chat.py 中断分发 + 前端审批卡 + SSE chunk 类型 + 77 步请求链路</td><td>P30_0690 / P30_0810 / P30_0750 / P31_0700 / P31_0800 / P31_1015</td></tr>
+<tr><td>P32</td><td>中间件总览表 + 故障场景覆盖矩阵 + 框架自动注入 8 个 + 用户 9 个</td><td>P32_0130 / P32_0780 / P32_0790 / P32_0800</td></tr>
+<tr><td>P33·P34</td><td>同步模式泳道 + 异步模式泳道 + 7 泳道完整请求时序 + 5 秒轮询</td><td>P33 11:00–13:05 / P33 16:40–17:00</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="sep">
+<h2>存疑与口径说明</h2>
+
+<section class="lecture" id="caveats">
+<div class="lecture-head"><span class="num">！</span><h2>存疑清单与待核项</h2><span class="dur">9 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<ul class="points">
+<li><b>ASR 常见误识</b>：honeynes/Hennis/哈尼斯→Harness、skis→Skills、绘画→会话、刷新→沙箱、tanner→timer、扣的/科迪斯→Cordis、马士/码事→码士、弗拉什→flush、compt/pmpization→prompt、stem pump/sstem→system prompt、atent/edent/a of→agent、word far/water far→waterfall、string 方式/str 调用→stream、"3159 个插件"→159 个、"面向aop啦"→AOP 切面。结合上下文判断，不确定处本报告均标"（转写不清，疑似 X）"。</li>
+<li><b>"五态生命周期"</b>：P23 讲者口头标签，画面实为 <code>VendorFileEntry</code> / <code>ProvenanceFileEntry</code> 两个 union 的成员合计 5 项，本报告保留该归类但注明为整理者命名。</li>
+<li><b>上下文规模口径</b>：P24 讲者口述 DeepSeek-V4 上下文百万级（未给文档依据）；P27 的 GLM profile 写 <code>max_input_tokens=12800</code>；两者口径不同（前者模型侧上限、后者框架配置侧）。</li>
+<li><b>端口号</b>：P33 演示用 <code>--port 2024</code> 是讲者示例值，非框架硬编码；部署时需随环境改。</li>
+<li><b>"77 步链路"与"77 个核心能力"</b>：均来自飞书文档截图，未逐条核对。</li>
+<li><b>P21 与 P30 重叠</b>：P21 是 HITL 演示、P30 是 HITL 代码详解，本报告合并到 C 板块 P21/P30 两张卡片，不重复计数。</li>
+<li><b>P37–P46 营销内容</b>：P12 / P13 / P36 含就业/涨薪/内推服务介绍，本报告仅保留客观结构不评价。</li>
+<li><b>项目底层</b>：课程项目底层基于 LangChain Deep Agents 构建（P22–P36 多处实证）；"DeepSeek Harness"既是产品名，也是这套项目的工程命名。</li>
+<li><b>帧实证范围</b>：本报告帧实证集中在 P02–P07、P21、P23、P29–P34；其余分P以 ASR + 讲者口述为主，关键术语经 <code>glossary.md</code> 校正。</li>
+</ul>
+</div>
+</section>
+
+<section class="lecture" id="links">
+<div class="lecture-head"><span class="num">⊕</span><h2>原文与延伸链接</h2><span class="dur">5 项</span><span class="caret">▾</span></div>
+<div class="lecture-body">
+<ul class="points">
+<li><b>B 站原合集</b>：搜索《DeepSeek Harness 源码精读》，UP 主「饭饭大王ouo」/ 码士集团；共 46 集，总时长约 8 小时。</li>
+<li><b>飞书文档</b>：<code>my.feishu.cn/docx/WQVndx4SOodEFUxNXGKcmZSYn0c</code>（讲者在 P28–P31 多处引用，含 77 步请求链路、中间件矩阵等核心图表）。</li>
+<li><b>CLI 启动</b>：<code>npx @deepseek-ai/dsh web</code>，默认本地服务地址 <code>http://127.0.0.1:8080</code>。</li>
+<li><b>Cordis 论文 / GitHub / 开发者文档 / 社区插件</b>：官网 P02 帧实证可见四个按钮，本报告不二次转写 URL。</li>
+<li><b>魔塔社区 MCP 广场</b>：图表可视化 MCP-Server 提供方，24h 有效期 URL 直配代码，过期即报错。</li>
+</ul>
+</div>
+</section>
+
+<hr class="sep">
+<p class="lede">回到：<a href="index.html">← 主页 · 心智模型</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A. 源码精读 P01–P10 · DeepSeek Harness 教程精华</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">dsh</div><div><b>DeepSeek Harness</b><small>46 讲源码精读 · 浓缩版</small></div></div>
+<nav class="nav">
+<div class="nav-group">总览</div>
+<a href="index.html"><span class="idx">0</span> 主页 · 心智模型</a>
+<div class="nav-group">课程精华</div>
+<a href="source.html" class="active"><span class="idx">A</span> 源码精读 P01–P10</a>
+<a href="project.html"><span class="idx">B</span> 项目实战 P11–P20</a>
+<a href="capabilities.html"><span class="idx">C</span> 六大能力 P21–P32</a>
+<a href="async.html"><span class="idx">D</span> 异步子代理 P33–P36</a>
+<a href="qa.html"><span class="idx">E</span> 短问答 P37–P46</a>
+<div class="nav-group">附录</div>
+<a href="extras.html"><span class="idx">⊕</span> 术语表 · 数字 · 存疑</a>
+</nav>
+<button class="theme-btn" id="themeBtn">☀ 浅色模式</button>
+<div class="side-foot">UP 饭饭大王ouo / 码士集团<br>约 8 小时 · 46 集 · 2026 年</div>
+</aside>
+
+<main>
+<span class="kicker">A · 源码精读 P01–P10</span>
+<section class="hero">
+<h1>DeepSeek Harness 内核</h1>
+<p class="lede">从官网 slogan 一路读到主循环、事件总线与 MCP 插件——把"一切皆插件"的设计哲学落到源码层，给出读源码的总纲（模块三问）与入口路线。</p>
+<div class="meta-chips">
+<span class="chip"><b>10</b> 讲</span>
+<span class="chip"><b>~110</b> 分钟</span>
+<span class="chip"><b>12</b> 核心概念</span>
+<span class="chip"><b>159</b> 默认插件</span>
+</div>
+</section>
+
+<div class="searchbar">
+<input id="search" placeholder="在本页搜索 P01–P10 任意关键词…">
+<span class="hint">ESC 清空</span>
+</div>
+<div class="no-result">没有匹配的讲次</div>
+
+<article class="lecture" id="P01">
+<div class="lecture-head">
+<span class="num">P01</span>
+<h2>Harness 是什么：一条命令跑起来你的第一个 AI 工位</h2>
+<span class="dur">10m</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 从官网 slogan 讲到两种启动方式，给后续源码精读定下前提——<b>先把工程跑起来</b>。</div>
+<ul class="points">
+<li>入口是官网：<code>deepseek.com/harness</code>。开发者预览版，面向全球开发者开放测试。</li>
+<li>唯一前置依赖是 <b>Node.js</b>。<code>npx @deepseek-ai/dsh web</code> 一条命令跨平台启动（默认端口 3080）。</li>
+<li>源码安装：<code>git clone</code> → <code>pnpm install</code> → 构建 → <code>pnpm dsh web --port 8080</code>。安装版与源码版要<b>错开端口</b>。</li>
+<li>启动入口在 <code>apps/cli/src/bin.ts</code>，讲者在此加了一行 <code>running from source</code> 调试日志用于区分启动方式。</li>
+<li>时间成本：首次装依赖 2–5 分钟、构建 5–10 分钟、启动 2 分钟内；第二次显著加快。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P02">
+<div class="lecture-head">
+<span class="num">P02</span>
+<h2>一切皆插件：四种预设模式怎么选</h2>
+<span class="dur">13m27</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 用设置页把"一切皆插件"落地，给出四种 Agent 预设的选型口径；末尾给出读源码的方法论框架。</div>
+<ul class="points">
+<li>设计哲学：<b>所有带 Agent 能力的东西都是插件</b>——模型、工具、Skills、会话、沙箱、存储、循环、调度、UI 本身；插件之间通过<b>服务 + 事件</b>对话、自由拼装。</li>
+<li>默认 <b>159 个插件</b>，每项都能搜、能配。</li>
+<li><b>标准</b>：功能最全的编码 Agent，日常开发用它。</li>
+<li><b>PTC</b>：继承标准 + Code Mode SDK，让模型用一个 TypeScript 程序组合多步操作；适合"需求模糊但明显是长任务"。</li>
+<li><b>极简</b>：只给 <code>bash</code> + <code>str_replace_editor</code> 两个工具，适合做基准测试/压测。</li>
+<li><b>创造</b>：继承标准 + 运行时检查 + 插件实验 + preset 创作指导。</li>
+<li>边界规则：预设变更"对此后新建的会话生效，运行中的会话保持它开始时的预设"。</li>
+<li><b>模块三问</b>（读源码的总纲）：① 它声明了什么 <code>ctx.*</code> 服务？② 它发出 / 监听什么事件？③ 它注册了什么 effect（可逆副作用）？</li>
+<li>源码阅读路线：入口 → 插件树 → 会话 → prompt 组装 → 工具 → Agent 与主循环(Agent-Loop) → 模型 → END；其中 Agent-Loop 与模型是<b>循环体</b>。</li>
+<li><b>插件 ≠ 工具</b>：插件是"注册了什么能力"，工具是"某次会话实际挂上去、model 能调的"。159 个插件，但一次对话经 prompt 组装后实际可能只有 3 个工具。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P03">
+<div class="lecture-head">
+<span class="num">P03</span>
+<h2>读源码第一步：入口在哪、插件树怎么叠三层</h2>
+<span class="dur">7m17</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 按 P02 的路线落地第一步与第二步——找到 <code>bin.ts</code> 入口、看清插件树的三层加载顺序。</div>
+<ul class="points">
+<li>入口的朴素方法：<code>bin</code> 目录 = 启动目录，即 <code>apps/cli/src/bin.ts</code>。</li>
+<li><code>bin.ts</code> 结构：<code>readVersion()</code> → <code>parseDshArgs(process.argv.slice(2), ...)</code> → <code>switch (invocation.mode)</code> 分派到 <code>profile</code> / <code>plugin</code> / <code>dump-config</code> / <code>default</code> 四种模式。</li>
+<li><code>profile</code> 分支：先 <code>loadLayeredEnv('dsh')</code> 分层加载 <code>.env</code>，再 <code>runProfile(...)</code> 按 profile 起插件。</li>
+<li>插件树<b>三层加载</b>，永远后者覆盖前者：① 自身/内置的默认插件集；② <code>profile</code> 目录里的插件；③ 用户主目录 <code>~</code> 下的插件/配置。</li>
+<li>想覆盖默认行为，不必改源码，在用户目录写一份同 ID 的配置/插件即可。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P04">
+<div class="lecture-head">
+<span class="num">P04</span>
+<h2>对话信息藏在哪：session 事件驱动与持久化归属</h2>
+<span class="dur">10m+</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 读第三个模块 <code>session</code>，得到全课第一个"颠覆认知"的结论——<b><code>flush</code> 不是持久化，会话语义只在内存，落盘是插件的事</b>。</div>
+<ul class="points">
+<li>会话代码不在 <code>apps</code> 里，在 <code>packages/core/session/src/index.ts</code>，1000 多行。</li>
+<li>文件结构顺序：import → 类型/接口声明 → <code>SessionStorage</code> 接口 → <code>interface Events</code>（把会话事件声明成"事件名 → 回调签名"）→ 工具类型 → 校验与组装函数。</li>
+<li><b>四个核心事件</b>：
+<code>session/created</code>（创建）/
+<code>session/disposed</code>（销毁/离开 store）/
+<code>session/event</code>（追加后广播，post-commit、fire-and-forget）/
+<code>session/flush</code>（awaited parallel durability checkpoint）。</li>
+<li><code>session/created</code> / <code>disposed</code> / <code>event</code> 都受 <code>@deepseek-ai/dsh-scope</code> 的 scope 过滤：agent 级监听器只看得到"经由该 agent context 进入"的会话。</li>
+<li>最大的认知点：<b>这些事件全在内存</b>。<code>flush</code> 只打一个<b>检查点</b>，<b>并不落盘</b>；真正的持久化由<b>持久化插件</b>承担（插件列表里能找到名字带 <code>storage</code> / <code>storage-json</code> 的"持久化三件套"）。</li>
+<li>为什么要检查点而不是随时存：模型输出可能只到一半，此时落盘会把残缺状态写进去；恢复时从中间状态续接会改变对话规则/思路。</li>
+<li>方法论引申：传统读源码的直觉（看到 <code>flush</code> 就以为"刷盘了"）会被"一切皆插件"打破——<b>会话自己只负责内存日志</b>。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P05">
+<div class="lecture-head">
+<span class="num">P05</span>
+<h2>提示词与工具链：像 AOP 一样的三层拦截机制</h2>
+<span class="dur">9m39</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 落到两个最常被二次开发的插件——<code>system-prompt</code>（提示词组装）与 <code>tools</code>（工具调用 + 三层 AOP 式拦截）。</div>
+<ul class="points">
+<li>提示词组装位置在 <code>packages/core/system-prompt</code>，入口 <code>src/index.ts</code>；<code>system-prompt</code> 自身也是个插件。</li>
+<li><b>Cordis 内核只干一件事：插件的加载、卸载、依赖关系</b>；其余"模型/工具/技能/会话/沙箱/存储/循环/调度/UI"全是插件。</li>
+<li><b>插件 ≠ 工具</b>：插件是大容器，内部包含若干工具；工具被调用时<b>一定经过三层拦截</b>（AOP 式），每层以事件形式暴露。</li>
+<li><code>tools/pre-execute</code>（before）：<code>@mode waterfall</code>，可放行/拒绝/询问。</li>
+<li><code>tools/execute</code>（executor）：<code>@mode waterfall</code>，围绕派发的 timeout/retry/metrics。</li>
+<li><code>tools/post-execute</code>（after）：<code>@mode waterfall</code>，可接受/替换/富化/拦截结果。</li>
+<li><b>@mode waterfall</b> 是 Cordis 的事件模式之一：按注册顺序依次执行，上一环可以把结果传给下一环（<code>next()</code> 决定是放行还是替换），与 Java Spring 的 AOP / 拦截器链、Servlet Filter 链思路一致。</li>
+<li>关键不变量：<code>exec.signal</code> 是调用方取消信号，<b>任何替换层都不能脱开调用方的取消</b>。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P06">
+<div class="lecture-head">
+<span class="num">P06</span>
+<h2>Agent 与 Agent Loop：主循环七步怎么跑起来</h2>
+<span class="dur">10m01</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把"一切皆插件"落到最核心的两个插件 <code>agent</code> 与 <code>agent-loop</code>，解释<b>为什么要把"智能体是什么"和"智能体的循环怎么跑"拆成两个插件</b>。</div>
+<ul class="points">
+<li>两个插件：<code>packages/core/agent/src/index.ts</code> 与 <code>packages/core/agent-loop/src/index.ts</code>。</li>
+<li><b><code>agent</code> 插件</b>定义"智能体是什么"（接口、注册表、agent state、create agent、事件总线）；属于<b>静态描述层</b>。</li>
+<li><b><code>agent-loop</code> 插件</b>负责"把这个智能体跑起来"（think → read → write → think → …）；属于<b>运行时驱动层</b>。</li>
+<li>拆开动机（讲者）：主循环要能被不同预设（标准 / PTC / 极简 / 创造）复用与替换，不该焊死在智能体定义里。</li>
+<li>Web UI 一次"你能做什么？"对话的轨迹能看到 <code>Glob → Think → Pwsh → Think → Read → Pwsh → Think → Read</code>，并显示"3轮·9步 | LLM 1m15s · 工具调用 10.4s | 首 token 平均 1.1s · 103 tok/s | 缓存命中 79% | 输入 149K tok · 输出 6.7K tok"。</li>
+<li><b>七步主流程</b>：① 源码入口 <code>bin.ts</code> → ② 加载三层插件树 → ③ 日志 + 存储初始化 → ④ 用户输入 → ⑤ prompt 组装 + 工具装配 → ⑥ Agent Loop 主循环（think → 工具执行 → think → …） → ⑦ LLM 调用 → END。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P07">
+<div class="lecture-head">
+<span class="num">P07</span>
+<h2>大模型调用怎么实现：抽象适配与环绕事件</h2>
+<span class="dur">10m44</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把主循环里每一圈 think 的最终落点——调大模型——拆到 <code>packages/core/llm</code>，得到"抽象类适配器 + waterfall 环绕事件"的可插拔结构。</div>
+<ul class="points">
+<li><code>packages/core/llm</code> 提供<b>抽象适配器</b>（provider/model/reasoningEffort/流式回调等），各家模型是子类实现。</li>
+<li><b><code>LlmRuntime extends Service</code></b>：对外暴露 <code>stream(options: GenerateOptions): AsyncIterable&lt;StreamChunk&gt;</code>；内部先走 <code>streamWithRegistration</code>，最终落到 <code>this.ctx.waterfall(this, 'llm/stream', options, () =&gt; this.adapterStream(options, prepared))</code>。</li>
+<li><b><code>llm/stream</code> 事件是"环绕每一次流式调用"的 waterfall</b>，所有模型调用都经过这个单一事件，再调到 <code>adapterStream</code>（生成器函数，token 级 delta 流）。</li>
+<li>这个 waterfall 挂的三大能力（讲者归纳）：<b>重试机制 / 回放机制 / 路由机制</b>——全部以监听器形式挂在 <code>llm/stream</code> 上，所以换供应商、改重试策略都无需改 LLM 调用源码。</li>
+<li><code>PreparedLlmCall</code> 接口：把"一次调用的 config + adapter registration"一起解析好并<b>深冻结</b>，字段包括 <code>config / retryPolicy / context / adapterDefaults</code>；保证一次调用的配置与适配器注册<b>强绑定、不可变</b>。</li>
+<li>请求冻结：<code>buildRequest()</code> 用 <code>deepFreeze(structuredClone(...))</code> 冻结请求，确保"请求到底该不该发出去"经过一系列组装与条件判断。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P08">
+<div class="lecture-head">
+<span class="num">P08</span>
+<h2>主循环（回合 turn）× 事件总线</h2>
+<span class="dur">19m43</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 把 <code>ReactLoopAgent.turn()</code> 当"唯一主线"读完——<b>turn 在外、while 在内</b>，一切状态变化都落成 <code>session.append(...)</code> 事件；再补 <code>cordis</code> 的 <code>waterfall</code> 事件总线如何把插件串成责任链。</div>
+<ul class="points">
+<li>主循环路径：<code>packages/core/agent-loop/src/agent.ts</code>，类 <code>ReactLoopAgent implements Agent</code>，246 行 <code>private async turn(): Promise&lt;boolean&gt;</code>。</li>
+<li><code>turn()</code> 骨架（帧实证）：不在运行态就直接抛错 → <code>signal.throwIfAborted()</code> → <code>const turn = phase.turn + 1</code> → <code>session.append('turn/start', { turn })</code> → <code>while (true) { ... }</code> → <code>preStep()</code> → <code>step()</code> → finally 写回合结束 + <code>reason</code>。</li>
+<li><b>turn 与 step 的关系</b>（讲者用拳击打比方）：一个"回合"=一场拳击的一局，<code>step</code> = 局内出拳；"只要拳速够快、够准，一个回合里打 100 次都行"——所以 <b>while 在 turn 里面，不是 turn 在 while 里面</b>。</li>
+<li><code>preStep()</code> 三件事：① 认领输入（从 inbox 取 target）② 组装提示词 ③ 瀑布流调用 → decision。preStep 才是"插件真正插手的地方"。</li>
+<li><code>step()</code> 流式调用模型，每个 chunk 都 <code>session.append</code> 落盘，所以"中间这些思考过程全部被持久化了"。</li>
+<li><b>事件总线</b>（<code>vendor/cordis/src/events.ts</code>）：<code>parallel</code>（并发）/ <code>emit</code>（同步）/ <code>serial</code>（串行直到一个 listener bail）/ <code>waterfall</code>（把最后一个 dispatch argument 当成 innermost <code>next</code>，listener outermost-first，不调 <code>next()</code> 就否决整条链）。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P09">
+<div class="lecture-head">
+<span class="num">P09</span>
+<h2>RAG 答案为什么会"飘"</h2>
+<span class="dur">10m04</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 学员提问"RAG 智能问答怎么让答案稳定不漂移"，讲者给出<b>向量检索 → 知识图谱（GraphRAG）→ 记忆/MCP</b> 的加固路径，并用自家"学习助手"的迭代史演示落地节奏。</div>
+<ul class="points">
+<li>问题拆解：① RAG 企业知识库的<b>基础做法就是向量检索</b>；② 要让答案稳定，<b>要加知识图谱（GraphRAG）</b>。</li>
+<li>为什么必须加图谱："<b>不建图谱，大模型始终是概率事件</b>"——向量只解决"内容相似"；图谱补的是"<b>知识之间的关系</b>"。</li>
+<li>举例（课程域）：直播课 27 期 → 课时 → 建关系（包含、<b>前置</b>、并列）。查询走 <code>prerequisite</code> 链，"哪个课有哪些章、哪些知识点、之前要先学什么，一目了然"。</li>
+<li>落地案例「学习助手」：RAG + 知识图谱 + function/finetune 都在用，提问时还做了<b>记忆增强</b>。</li>
+<li>迭代史：需求设计 → <b>V2 加知识图谱并升级 Harness 架构</b> → <b>V3 从 demo 级网页改成对接 Web 协议</b> → 用真实学员群灰度测试 → 后续继续加 <b>MCP</b>。</li>
+<li>方法论（反复强调）：<b>做智能体不要一上来就做到 90%–95%</b>，要先与主业务系统联调，一步两步三步迭代。</li>
+</ul>
+</div>
+</article>
+
+<article class="lecture" id="P10">
+<div class="lecture-head">
+<span class="num">P10</span>
+<h2>插件四件套 + MCP 对接</h2>
+<span class="dur">9m53</span>
+<span class="caret">▼</span>
+</div>
+<div class="lecture-body">
+<div class="pos"><b>一句话定位</b> 一次"认知翻转"——<b>源码精读最难，插件开发最简单</b>；一个插件的最小形态 = <code>cordis.yml</code>（声明）+ <code>src/index.ts</code>（四件套）。</div>
+<ul class="points">
+<li>插件最小形态 = <b>两个文件</b>：<code>cordis.yml</code>（声明 <code>id</code> + <code>name</code>）与 <code>src/index.ts</code>（代码入口）。</li>
+<li><b>四件套</b>（<code>lesson4-example-tool/src/index.ts</code> 全文实证）：
+① 固定引入 <code>Context</code> + <code>defineTool</code>；
+② 插件命名 <code>export const name = 'tool-student-local'</code>；
+③ 声明硬依赖 <code>export const inject = ['tools']</code>；
+④ 挂载入口 <code>export function apply(ctx: Context)</code>，内部 <code>ctx.tools.register(defineTool({...}))</code>。</li>
+<li>注册体五要素：<code>name / description / parameters / output.schema / execute</code>。</li>
+<li>完全体（MCP 插件）：四件套不变，<b>多出 Config 与错误映射</b>——<code>interface Config { url; apiKeyRef; toolCallTimeoutMs }</code> + 同名 zod schema 运行时校验；<code>toDiagnostic()</code> 把协议错误翻成"人话"。</li>
+<li>MCP 接入细节：用官方 MCP SDK（<code>Client</code> + <code>StreamableHTTPClientTransport</code>），凭证经 <code>ctx.credentials.resolve(config.apiKeyRef)</code> 解析、不进代码。</li>
+<li>讲者结论：<b>复杂的插件前面全都一模一样，只是多了一个 config、多了一堆 MCP 端点引入与协议错误诊断</b>——入口始终是 <code>apply</code>。</li>
+</ul>
+</div>
+</article>
+
+<h2 id="concepts">本组核心概念速查</h2>
+<table>
+<tr><th>概念</th><th>定义</th><th>首次出现</th></tr>
+<tr><td>一切皆插件</td><td>所有 Agent 能力都由插件组合而成</td><td>P02</td></tr>
+<tr><td>插件 ≠ 工具</td><td>插件是"注册了什么能力"，工具是"某次会话实际挂上去"的</td><td>P02</td></tr>
+<tr><td>模块三问</td><td>ctx.* 服务 / 事件 / effect</td><td>P02</td></tr>
+<tr><td>三层插件树</td><td>内置 → profile → 用户，后者覆盖前者</td><td>P03</td></tr>
+<tr><td>session/flush</td><td>仅检查点，落盘归插件</td><td>P04</td></tr>
+<tr><td>tools 三层拦截</td><td>pre-execute / execute / post-execute，@mode waterfall</td><td>P05</td></tr>
+<tr><td>agent vs agent-loop</td><td>静态描述层 vs 运行时驱动层</td><td>P06</td></tr>
+<tr><td>turn vs step</td><td>turn 在外、while 在内</td><td>P08</td></tr>
+<tr><td>waterfall</td><td>按注册顺序执行，不调 next() 即否决</td><td>P08</td></tr>
+<tr><td>Agentic RAG</td><td>RAG 不是独立系统，是智能体里的一个检索工具</td><td>P09</td></tr>
+<tr><td>插件四件套</td><td>固定引入 + name + inject + apply</td><td>P10</td></tr>
+</table>
+
+<hr class="sep">
+<p class="lede">下一组：<a href="project.html">B. 项目实战 P11–P20 →</a></p>
+</main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

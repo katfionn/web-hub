@@ -1019,6 +1019,222 @@ button{font-family:inherit}
 }
 
 /* ============================================================
+   README Section
+   ============================================================ */
+.readme-section{
+  margin-bottom:32px;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--line);
+  background:var(--surface);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+  transition:all .3s cubic-bezier(.2,.8,.2,1);
+}
+.readme-section[hidden]{
+  display:none;
+}
+.readme-section.collapsed .readme-content{
+  max-height:0;
+  padding:0 24px;
+  opacity:0;
+}
+.readme-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 20px;
+  background:var(--surface-soft);
+  border-bottom:1px solid var(--line);
+  transition:background .2s;
+}
+.readme-section.collapsed .readme-header{
+  border-bottom:none;
+}
+.readme-header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.readme-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:var(--accent-soft);
+  border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);
+  color:var(--accent);
+}
+.readme-title{
+  margin:0;
+  font-family:var(--font-display);
+  font-size:15px;
+  font-weight:650;
+  letter-spacing:-.01em;
+  color:var(--ink);
+}
+.readme-toggle{
+  transition:transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.readme-section.collapsed .readme-toggle{
+  transform:rotate(180deg);
+}
+.readme-content{
+  max-height:600px;
+  padding:24px;
+  overflow-y:auto;
+  transition:all .3s cubic-bezier(.2,.8,.2,1);
+  font-size:14px;
+  line-height:1.7;
+  color:var(--ink);
+}
+.readme-content::-webkit-scrollbar{
+  width:8px;
+}
+.readme-content::-webkit-scrollbar-track{
+  background:transparent;
+}
+.readme-content::-webkit-scrollbar-thumb{
+  background:var(--surface-muted);
+  border-radius:4px;
+}
+.readme-content::-webkit-scrollbar-thumb:hover{
+  background:var(--ink-muted);
+}
+.readme-loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:40px;
+  color:var(--ink-secondary);
+}
+.readme-spinner{
+  width:20px;
+  height:20px;
+  border:2px solid var(--line-strong);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.readme-error{
+  padding:40px;
+  text-align:center;
+  color:var(--ink-secondary);
+}
+.readme-error-icon{
+  width:40px;
+  height:40px;
+  margin:0 auto 12px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.2);
+  color:#dc2626;
+}
+[data-theme="dark"] .readme-error-icon{
+  color:#f87171;
+  background:rgba(248,113,113,.12);
+}
+
+/* README Markdown Styles */
+.readme-content h1,.readme-content h2,.readme-content h3,
+.readme-content h4,.readme-content h5,.readme-content h6{
+  margin:1.5em 0 .5em;
+  font-family:var(--font-display);
+  font-weight:650;
+  letter-spacing:-.015em;
+  color:var(--ink);
+  line-height:1.3;
+}
+.readme-content h1{font-size:1.8em;border-bottom:2px solid var(--line);padding-bottom:.3em}
+.readme-content h2{font-size:1.5em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+.readme-content h3{font-size:1.25em}
+.readme-content h4{font-size:1.1em}
+.readme-content h1:first-child,.readme-content h2:first-child,
+.readme-content h3:first-child{margin-top:0}
+.readme-content p{
+  margin:1em 0;
+  color:var(--ink);
+}
+.readme-content a{
+  color:var(--accent);
+  text-decoration:none;
+  border-bottom:1px solid transparent;
+  transition:border-color .2s;
+}
+.readme-content a:hover{
+  border-bottom-color:var(--accent);
+}
+.readme-content code{
+  font-family:var(--font-mono);
+  font-size:.9em;
+  padding:2px 6px;
+  border-radius:4px;
+  background:var(--surface-soft);
+  border:1px solid var(--line);
+  color:var(--accent-ink);
+}
+.readme-content pre{
+  margin:1em 0;
+  padding:16px;
+  border-radius:var(--radius-sm);
+  background:var(--surface-soft);
+  border:1px solid var(--line);
+  overflow-x:auto;
+}
+.readme-content pre code{
+  padding:0;
+  border:none;
+  background:transparent;
+  color:var(--ink);
+}
+.readme-content ul,.readme-content ol{
+  margin:1em 0;
+  padding-left:2em;
+}
+.readme-content li{
+  margin:.3em 0;
+}
+.readme-content blockquote{
+  margin:1em 0;
+  padding:0 1em;
+  border-left:3px solid var(--line-strong);
+  color:var(--ink-secondary);
+}
+.readme-content img{
+  max-width:100%;
+  height:auto;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--line);
+  margin:1em 0;
+}
+.readme-content table{
+  width:100%;
+  margin:1em 0;
+  border-collapse:collapse;
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+}
+.readme-content th,.readme-content td{
+  padding:8px 12px;
+  border:1px solid var(--line);
+  text-align:left;
+}
+.readme-content th{
+  background:var(--surface-soft);
+  font-weight:600;
+  color:var(--ink);
+}
+.readme-content hr{
+  margin:2em 0;
+  border:none;
+  border-top:1px solid var(--line);
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width:720px){
@@ -1033,6 +1249,7 @@ button{font-family:inherit}
   .rec-card{flex-wrap:wrap}
   .rec-actions{width:100%;justify-content:flex-end}
   .analytics-grid{grid-template-columns:1fr}
+  .readme-content{padding:18px;max-height:400px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
@@ -1114,6 +1331,31 @@ button{font-family:inherit}
     </div>
   </section>
 
+  <!-- README Section -->
+  <section id="readme-section" class="readme-section" hidden>
+    <div class="readme-header">
+      <div class="readme-header-left">
+        <div class="readme-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <h2 class="readme-title">README.md</h2>
+      </div>
+      <button class="readme-toggle icon-btn" id="readme-toggle" title="折叠 README" aria-label="折叠 README">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+      </button>
+    </div>
+    <div class="readme-content" id="readme-content">
+      <div class="readme-loading">
+        <div class="readme-spinner"></div>
+        <span>加载 README 中...</span>
+      </div>
+    </div>
+  </section>
+
   <!-- Pages Directory Section -->
   <div class="toolbar">
     <div class="toolbar-left">
@@ -1189,6 +1431,7 @@ button{font-family:inherit}
 
   let cardEls = [];
   let $grid, $count, $meta, $empty, $noresult, $error, $errorMsg, $search, $extWidgets;
+  let $readmeSection, $readmeContent, $readmeToggle;
 
   /* ---------------- helpers ---------------- */
 
@@ -1421,6 +1664,163 @@ button{font-family:inherit}
       }
     }
     return await loadManifest();
+  }
+
+  /* ---------------- README fetching & rendering ---------------- */
+
+  async function fetchReadme(owner, repo, branch) {
+    const branches = branch ? [branch] : ['main', 'master'];
+
+    for (let i = 0; i < branches.length; i++) {
+      const br = branches[i];
+      const url = 'https://raw.githubusercontent.com/' +
+        encodeURIComponent(owner) + '/' +
+        encodeURIComponent(repo) + '/' +
+        encodeURIComponent(br) + '/README.md';
+
+      try {
+        const res = await fetchWithTimeout(url, 10000);
+        if (res.ok) {
+          return await res.text();
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    throw new Error('未找到 README.md 文件');
+  }
+
+  function parseMarkdown(md) {
+    let html = escapeHtml(md);
+
+    // Headers
+    html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
+    html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
+    html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+
+    // Code blocks
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
+      return '<pre><code>' + code + '</code></pre>';
+    });
+
+    // Inline code (after code blocks)
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Bold
+    html = html.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+    // Italic
+    html = html.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+    html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // Links
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Images
+    html = html.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
+
+    // Horizontal rules
+    html = html.replace(/^(?:---|\*\*\*|___)$/gm, '<hr>');
+
+    // Unordered lists
+    html = html.replace(/^\*\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/^-\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+    // Ordered lists
+    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+
+    // Blockquotes
+    html = html.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // Line breaks to paragraphs
+    const lines = html.split('\n');
+    let result = [];
+    let para = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) {
+        if (para.length > 0) {
+          const joined = para.join(' ');
+          if (!joined.match(/^<(h[1-6]|pre|ul|ol|blockquote|hr|table)/)) {
+            result.push('<p>' + joined + '</p>');
+          } else {
+            result.push(joined);
+          }
+          para = [];
+        }
+      } else {
+        if (line.match(/^<(h[1-6]|pre|ul|ol|blockquote|hr|table)/)) {
+          if (para.length > 0) {
+            result.push('<p>' + para.join(' ') + '</p>');
+            para = [];
+          }
+          result.push(line);
+        } else {
+          para.push(line);
+        }
+      }
+    }
+
+    if (para.length > 0) {
+      const joined = para.join(' ');
+      if (!joined.match(/^<(h[1-6]|pre|ul|ol|blockquote|hr|table)/)) {
+        result.push('<p>' + joined + '</p>');
+      } else {
+        result.push(joined);
+      }
+    }
+
+    return result.join('\n');
+  }
+
+  async function loadReadme() {
+    const r = resolveRepo();
+    if (!r.owner || !r.repo) {
+      $readmeSection.hidden = true;
+      return;
+    }
+
+    $readmeSection.hidden = false;
+    $readmeContent.innerHTML = '<div class="readme-loading"><div class="readme-spinner"></div><span>加载 README 中...</span></div>';
+
+    try {
+      const markdown = await fetchReadme(r.owner, r.repo, CONFIG.branch);
+      const html = parseMarkdown(markdown);
+      $readmeContent.innerHTML = html;
+    } catch (err) {
+      $readmeContent.innerHTML =
+        '<div class="readme-error">' +
+          '<div class="readme-error-icon">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' +
+            '</svg>' +
+          '</div>' +
+          '<p>' + escapeHtml(err.message || '加载 README 失败') + '</p>' +
+        '</div>';
+    }
+  }
+
+  function initReadmeToggle() {
+    if (!$readmeToggle || !$readmeSection) return;
+
+    $readmeToggle.addEventListener('click', function() {
+      const isCollapsed = $readmeSection.classList.contains('collapsed');
+      if (isCollapsed) {
+        $readmeSection.classList.remove('collapsed');
+        $readmeToggle.title = '折叠 README';
+        $readmeToggle.setAttribute('aria-label', '折叠 README');
+      } else {
+        $readmeSection.classList.add('collapsed');
+        $readmeToggle.title = '展开 README';
+        $readmeToggle.setAttribute('aria-label', '展开 README');
+      }
+    });
   }
 
   /* ---------------- meta extraction ---------------- */
@@ -1829,10 +2229,15 @@ button{font-family:inherit}
     $errorMsg = document.getElementById('error-msg');
     $search = document.getElementById('search-input');
     $extWidgets = document.getElementById('ext-widgets');
+    $readmeSection = document.getElementById('readme-section');
+    $readmeContent = document.getElementById('readme-content');
+    $readmeToggle = document.getElementById('readme-toggle');
 
     initTheme();
     renderBrand();
     initWidgets();
+    initReadmeToggle();
+    loadReadme();
 
     $search.addEventListener('input', applyFilter);
 
